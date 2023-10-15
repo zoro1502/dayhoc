@@ -7,6 +7,8 @@ import com.harusora.student.security.common.BaseResponse;
 import com.harusora.student.service.interfaceService.UserModelService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -16,11 +18,13 @@ import static java.lang.Integer.parseInt;
 
 @Service
 @RequiredArgsConstructor
-@Slf4j
 public class UserServiceImpl implements UserModelService {
 
     private final UserModelRepository userRepo;
+//    private final  userRepo;
     private final PasswordEncoder passwordEncoder;
+
+    private final Logger log = LoggerFactory.getLogger(UserServiceImpl.class);
     @Override
     public UserModelResponse create(UserModelRequest userDto) {
             log.debug(userDto.getFull_name());
@@ -30,6 +34,7 @@ public class UserServiceImpl implements UserModelService {
             user.setRole(userDto.getRole());
             user.setEmail(userDto.getEmail());
             user.setAddress(userDto.getAddress());
+//            if()
             user.setPassword(passwordEncoder.encode(userDto.getPassword()));
             user.setStatus(userDto.getStatus());
             user.setUpdated_at(new Date());
@@ -42,7 +47,8 @@ public class UserServiceImpl implements UserModelService {
 
     @Override
     public List<UserModel> findAll(String page, String page_size, String email, String phone, String status, String role) {
-        List<UserModel> users = userRepo.findAndCount(parseInt(page) * parseInt(page_size) -1, parseInt(page_size), email, role, phone);
+        log.info("page-------> " + ((parseInt(page) - 1) * parseInt(page_size)) + page_size);
+        List<UserModel> users = userRepo.findAndCount((parseInt(page) - 1) * parseInt(page_size), parseInt(page_size), email, role, phone);
         return users;
     }
 
@@ -53,7 +59,7 @@ public class UserServiceImpl implements UserModelService {
     }
 
     @Override
-    public UserModel update(int id, UserModelRequest userDto) {
+    public UserModelResponse update(int id, UserModelRequest userDto) {
         log.info("id------> ", id);
         UserModel user = userRepo.getById(id);
         log.info("User------> ", user);
@@ -64,17 +70,17 @@ public class UserServiceImpl implements UserModelService {
         user.setRole(userDto.getRole());
         user.setAddress(userDto.getAddress());
         user.setStatus(userDto.getStatus());
+        user.setPhone(userDto.getPhone());
+        user.setAvatar(userDto.getAvatar());
         user.setUpdated_at(new Date());
         user.setGender(userDto.getGender());
-        userRepo.save(user);
-        UserModelResponse result = new UserModelResponse(Optional.ofNullable(user));
-        return user;
+        var response = userRepo.save(user);
+        return new UserModelResponse(Optional.of(response));
 
     }
 
     public List<?> findByConditions(UserModel condition) {
         List<UserModelResponse> users = new ArrayList<>();
-
         return users;
     }
 

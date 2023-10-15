@@ -14,5 +14,5 @@ public class UserCourseClassRequest {
     private Integer course_id;
     private Integer user_id;
     private Integer class_id;
-    private Date updated_at;
+    private Date updated_at = new Date();
 }

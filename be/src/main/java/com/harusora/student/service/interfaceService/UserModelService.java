@@ -12,7 +12,7 @@ public interface UserModelService {
     List<?> findAll(String page, String page_size, String email, String phone,String status, String role);
     UserModelResponse findOne(int id);
 
-    UserModel update(int id, UserModelRequest userDto);
+    UserModelResponse update(int id, UserModelRequest userDto);
 
     BaseResponse.Metadata countByCondition(String page, String page_size, String email, String phone,String status, String role);
 }

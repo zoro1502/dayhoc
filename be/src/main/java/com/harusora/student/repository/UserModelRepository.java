@@ -16,7 +16,7 @@ public interface UserModelRepository extends JpaRepository<UserModel, Integer> {
             "WHERE TRUE AND (:email is null or :email ='' or u.email like %:email%) " +
             "AND (:phone is null or :phone ='' or u.phone like %:phone%) " +
             "AND (:role is null or :role ='' or u.role = :role) " +
-            "LIMIT :page_size OFFSET :page",nativeQuery = true)
+            " LIMIT :page_size OFFSET :page",nativeQuery = true)
     List<UserModel> findAndCount(@Param("page") int page, @Param("page_size")int page_size, @Param("email") String email, @Param("role") String role, @Param("phone") String phone);
 
     @Override

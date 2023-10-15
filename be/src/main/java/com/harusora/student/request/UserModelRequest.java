@@ -9,6 +9,7 @@ import lombok.experimental.Accessors;
 import org.springframework.data.annotation.CreatedDate;
 
 import java.sql.Timestamp;
+import java.util.List;
 
 @Data
 @AllArgsConstructor
@@ -24,6 +25,8 @@ public class UserModelRequest {
     private String avatar;
     private String gender;
     private Integer role;
+
+    private List<Integer> class_ids;
 
     private Integer status;
     private Timestamp updated_at;

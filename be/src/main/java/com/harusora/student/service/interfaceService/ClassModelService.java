@@ -15,7 +15,7 @@ public interface ClassModelService {
     ClassModel create(ClassModelRequest classDto);
 
     UserCourseClassReponse joinClass(UserCourseClassRequest classDto);
-    List<ClassModel> findAll(String page, String page_size, String code, String course_id);
+    List<ClassModelReponse> findAll(String page, String page_size, String code, String course_id);
     ClassModelReponse findOne(int id);
 
     ClassModel update(int id, ClassModelRequest classDto);

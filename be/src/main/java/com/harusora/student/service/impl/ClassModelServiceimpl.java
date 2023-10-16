@@ -18,6 +18,7 @@ import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
@@ -78,7 +79,7 @@ public class ClassModelServiceimpl implements ClassModelService {
         if(response != null) {
             Optional<UserModel> user = userRepo.findById(joinDto.getUser_id());
             Optional<CourseModel> course = courseRepo.findById(classData.get().getCourse_id());
-            Optional<ClassModel> classroom = findOne(joinDto.getClass_id()).getResult();
+            Optional<ClassModel> classroom = findOne(joinDto.getClass_id()).getClassroom();
             return new UserCourseClassReponse(response.getId(),
                     response.getClass_id(), response.getCourse_id(),
                     response.getUser_id(), user.get(), classroom.get(), course.get(),
@@ -90,15 +91,39 @@ public class ClassModelServiceimpl implements ClassModelService {
     }
 
     @Override
-    public List<ClassModel> findAll(String page, String page_size, String code, String course_id) {
+    public List<ClassModelReponse> findAll(String page, String page_size, String code, String course_id) {
+        List<ClassModelReponse> response = new ArrayList<ClassModelReponse>();
         List<ClassModel> classModel = classModelRepo.findAndCount((parseInt(page) - 1) * parseInt(page_size), parseInt(page_size), code, course_id);
-        return classModel;
+        if(!classModel.isEmpty()) {
+            for(ClassModel room : classModel) {
+                Optional<CourseModel> course = courseRepo.findById(room.getCourse_id());
+                ClassModelReponse itemRes = new ClassModelReponse();
+                itemRes.setCourse(course);
+                itemRes.setClassroom(Optional.of(room));
+                if(!course.isEmpty()) {
+                    Optional<UserModel> user = userRepo.findById(course.get().getUser_id());
+                    itemRes.setTeacher(user);
+                }
+                response.add(itemRes);
+            }
+        }
+        return response;
     }
 
     @Override
     public ClassModelReponse findOne(int id) {
+        ClassModelReponse response = new ClassModelReponse();
         Optional<ClassModel>  classItem= classModelRepo.findById(id);
-        return new ClassModelReponse(classItem);
+        if(!classItem.isEmpty()) {
+            Optional<CourseModel> course = courseRepo.findById(classItem.get().getCourse_id());
+            response.setCourse(course);
+            response.setClassroom(classItem);
+            if(!course.isEmpty()) {
+                Optional<UserModel> user = userRepo.findById(course.get().getUser_id());
+                response.setTeacher(user);
+            }
+        }
+        return response;
     }
 
     @Override

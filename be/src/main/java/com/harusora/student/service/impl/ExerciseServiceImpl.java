@@ -58,6 +58,7 @@ public class ExerciseServiceImpl implements ExerciseService {
     @Override
     public List<ExerciseModel> findAll(String page, String page_size, String title) {
         List<ExerciseModel> data = exerciseRepo.findAndCount((parseInt(page) - 1) * parseInt(page_size), parseInt(page_size), title);
+
         return data;
     }
 

@@ -53,14 +53,14 @@ export const CourseForm = ( props ) =>
 			{
 
 				let formValue = {
-					name: data.name,
-					content: data.content,
-					code: data.code,
-					status: data.status,
-					course_id: data.course_id,
-					slot: data.slot,
-					student_max_number: data.student_max_number,
-					slot_date: data.slot_date ? data.slot_date.split(',').map(item => Number(item)) : null
+					name: data?.classroom?.name,
+					content: data?.classroom?.content,
+					code: data?.classroom?.code,
+					status: data?.classroom?.status,
+					course_id: data?.classroom?.course_id,
+					// slot: data.slot,
+					// student_max_number: data.student_max_number,
+					// slot_date: data.slot_date ? data.slot_date.split(',').map(item => Number(item)) : null
 				}
 				form.setFieldsValue( formValue )
 			}
@@ -72,13 +72,13 @@ export const CourseForm = ( props ) =>
 	{
 		const response = await departmentApi.getDepartments(
 			{ page: 1, page_size: 1000, status: 1 } );
-		if ( response.status === 'success' && response.data.result.length > 0 )
+		if ( response.status === 'success' && response.data.length > 0 )
 		{
-			let user = response.data.result.reduce( ( arr, e ) =>
+			let user = response.data.reduce( ( arr, e ) =>
 			{
 				arr.push( {
-					value: e.id,
-					label: e.name
+					value: e?.course.id,
+					label: e?.course.name
 				} )
 				return arr;
 			}, [] );
@@ -92,8 +92,8 @@ export const CourseForm = ( props ) =>
 
 		let formData = { ...e };
 		let res;
-		formData.student_max_number = Number(formData.student_max_number);
-		formData.slot_dates = e.slot_date;
+		// formData.student_max_number = Number(formData.student_max_number);
+		// formData.slot_dates = e.slot_date;
 
 		if ( props.id )
 		{
@@ -107,8 +107,9 @@ export const CourseForm = ( props ) =>
 			props.setShowModal( false );
 			setMes( '' )
 			resetForm( form )
+			props.setId(null)
 			message.success( 'Successfully' )
-			props.getClassList( { ...props.paging, page: 1 } );
+			props.getClassList( {page: 1, page_size: 20  } );
 		} else
 		{
 			setMes( res.message );
@@ -155,7 +156,7 @@ export const CourseForm = ( props ) =>
 					validateMessages={ e => validateMessages( e, form ) }
 				>
 					<div className='row'>
-						<div className="col-md-6">
+						<div className="col-md-6 col-12">
 							<Form.Item name="name" label="Class name"
 								rules={ [ { required: true } ] }
 								className=' d-block'>
@@ -163,7 +164,7 @@ export const CourseForm = ( props ) =>
 							</Form.Item>
 						</div>
 
-						<div className="col-md-6">
+						<div className="col-md-6 col-12">
 							<Form.Item name="code" label="Class code"
 								rules={ [ { required: true } ] }
 								className=' d-block'>
@@ -171,15 +172,15 @@ export const CourseForm = ( props ) =>
 							</Form.Item>
 						</div>
 
-						<div className="col-md-6">
+						{/* <div className="col-md-6">
 							<Form.Item name="student_max_number" label="Max student number"
 								rules={ [ { required: true } ] }
 								className=' d-block'>
 								<Input type="number" placeholder='Enter ' />
 							</Form.Item>
-						</div>
+						</div> */}
 
-						<div className="col-md-6">
+						<div className="col-md-6 col-12">
 							<Form.Item name="status" label="Status"
 								rules={ [ { required: true } ] }
 								className=' d-block'>
@@ -190,7 +191,7 @@ export const CourseForm = ( props ) =>
 								/>
 							</Form.Item>
 						</div>
-						<div className="col-md-6">
+						<div className="col-12 col-md-6">
 							<Form.Item name="course_id" label="Course"
 								rules={ [ { required: true } ] }
 								className=' d-block'>
@@ -201,7 +202,7 @@ export const CourseForm = ( props ) =>
 								/>
 							</Form.Item>
 						</div>
-						<div className="col-md-6">
+						{/* <div className="col-md-6">
 							<Form.Item name="slot" label="Slot"
 								rules={ [ { required: true } ] }
 								className=' d-block'>
@@ -211,8 +212,8 @@ export const CourseForm = ( props ) =>
 									options={ slotConfig }
 								/>
 							</Form.Item>
-						</div>
-						<div className="col-md-12">
+						</div> */}
+						{/* <div className="col-md-12">
 							<Form.Item name="slot_date" label="Days to learn"
 								rules={ [ { required: true } ] }
 								className=' d-block'>
@@ -223,7 +224,7 @@ export const CourseForm = ( props ) =>
 									options={ slotDates }
 								/>
 							</Form.Item>
-						</div>
+						</div> */}
 					</div>
 					<span className="text-danger">{ mes }</span>
 					<div className='d-flex justify-content-center'>

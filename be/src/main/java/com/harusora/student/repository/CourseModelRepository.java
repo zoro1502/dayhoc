@@ -23,6 +23,24 @@ public interface CourseModelRepository extends JpaRepository<CourseModel, Intege
     List<CourseModel> findAndCount(@Param("page") int page, @Param("page_size")int page_size, @Param("code") String code, @Param("course_id") String course_id);
 
 
+    @Query(value = "Select c.* from courses c LEFT JOIN user_courses_classes uc ON c.id = uc.course_id " +
+            "WHERE TRUE AND c.id = :course_id " +
+            " AND uc.user_id = :user_id" ,nativeQuery = true)
+    List<CourseModel> findStudentCourse(@Param("user_id") String user_id, @Param("course_id") Integer course_id);
+
+    @Query(value = "Select * from courses c " +
+            "WHERE TRUE AND c.id IN (:course_id)" ,nativeQuery = true)
+    List<CourseModel> findTeacherCourse(@Param("course_id") String course_id);
+
+
+    @Query(value = "Select * from courses c " +
+            "WHERE TRUE AND c.user_id = :user_id" ,nativeQuery = true)
+    List<CourseModel> findCourses(@Param("user_id") Integer user_id);
+
+
+
+
+
     @Query(value = "Select count(*) from courses u " +
             "WHERE TRUE AND (:code is null or :code ='' or u.code like %:code%) " +
             " AND (:course_id is null or :course_id ='' or u.id = :course_id)",nativeQuery = true)

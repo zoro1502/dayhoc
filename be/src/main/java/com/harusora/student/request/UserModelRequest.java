@@ -26,7 +26,7 @@ public class UserModelRequest {
     private String gender;
     private Integer role;
 
-    private List<Integer> class_ids;
+    private List<Integer> courseIds;
 
     private Integer status;
     private Timestamp updated_at;

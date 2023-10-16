@@ -47,13 +47,13 @@ function ClassroomsPage ()
 		dispatch( toggleShowLoading( true ) );
 		const response = await departmentApi.getClassList( filters );
 		await timeDelay( 1000 );
-		if ( response.status === 'success' || response.status === 200 )
+		if ( response?.status === 'success' || response?.status === 200 )
 		{
-			setClasses( response.data.result );
-			setPaging( { ...response.data.meta } );
+			setClasses( response?.data );
+			setPaging( { ...response?.meta } );
 		} else
 		{
-			message.error( response.message || 'Error! Please try again' )
+			message.error( response?.message || 'Error! Please try again' )
 		}
 		dispatch( toggleShowLoading( false ) );
 	};
@@ -65,7 +65,7 @@ function ClassroomsPage ()
 			const response = await departmentApi.deleteClass( id );
 			dispatch( toggleShowLoading( true ) );
 			await timeDelay( 1000 );
-			if ( response.status === 200 || response.status === 'success' )
+			if ( response?.status === 200 || response?.status === 'success' )
 			{
 				getClassList( { page: 1 } );
 				setShowModal( false );
@@ -73,7 +73,7 @@ function ClassroomsPage ()
 				message.success( 'Delete successfully!' );
 			} else
 			{
-				message.error( response.message || 'Error! Please try again' );
+				message.error( response?.message || 'Error! Please try again' );
 				dispatch( toggleShowLoading( false ) );
 
 			}
@@ -149,16 +149,19 @@ function ClassroomsPage ()
 		return item.slot;
 	}
 
-	const joinData = async(id) => {
-		dispatch(toggleShowLoading(true))
-		const res = await departmentApi.joinClass(id);
-		if(res?.status === 'success') {
-			dispatch(toggleShowLoading(false))
-			message.success('You have joined successfully!');
-			getClassList({page: 1});
-		} else {
-			message.error(res.message);
-			dispatch(toggleShowLoading(false))
+	const joinData = async ( id ) =>
+	{
+		dispatch( toggleShowLoading( true ) )
+		const res = await departmentApi.joinClass( id );
+		if ( res?.status === 'success' )
+		{
+			dispatch( toggleShowLoading( false ) )
+			message.success( 'You have joined successfully!' );
+			getClassList( { page: 1 } );
+		} else
+		{
+			message.error( res.message );
+			dispatch( toggleShowLoading( false ) )
 		}
 	}
 
@@ -193,16 +196,17 @@ function ClassroomsPage ()
 											<th className="border-0">Classroom Name</th>
 											<th className="border-0">Classroom code</th>
 											<th className="border-0">Course name</th>
-											<th className="border-0">Time table</th>
+											{/* <th className="border-0">Time table</th> */ }
 											<th className="border-0">Status</th>
-											<th className="border-0">Students</th>
+											{/* <th className="border-0">Students</th> */}
 
 											{ role === 3 &&
 												<>
-													<th className="border-0">Created at</th>
-													<th className="border-0">action</th>
+
 												</>
 											}
+											<th className="border-0">Created at</th>
+											<th className="border-0">action</th>
 										</tr>
 									</thead>
 									{/* {loading === true &&
@@ -223,34 +227,37 @@ function ClassroomsPage ()
 												classes.map( ( item, index ) => (
 													<tr key={ index }>
 														<td>{ ( paging.page - 1 ) * paging.page_size + ( index + 1 ) }</td>
-														<td className="text-break" style={ { minWidth: 100 } }>{ item.name || 'N/A' }</td>
-														<td className="text-break" style={ { minWidth: 100 } }>{ item.code || 'N/A' }</td>
+														<td className="text-break" style={ { minWidth: 100 } }>{ item.classroom?.name || 'N/A' }</td>
+														<td className="text-break" style={ { minWidth: 100 } }>{ item.classroom?.code || 'N/A' }</td>
 														<td className="text-break" style={ { minWidth: 100 } }>
 															{ item.course?.name || 'N/A' }
 														</td>
-														<td className="text-break" style={ { minWidth: 100 } }>
+														{/* <td className="text-break" style={ { minWidth: 100 } }>
 															{ genTimeLine( item ) }
-														</td>
-														<td className="text-nowrap">{ genStatusClass( item.status ) }</td>
-														<td className="text-break">{ item.total + '/' + item.student_max_number }</td>
-														<td>{ moment( item.created_at ).format( "DD/MM/yyyy" ) }</td>
+														</td> */}
+														<td className="text-nowrap">{ genStatusClass( item?.classroom?.status ) }</td>
+														{/* <td className="text-break">{ item.total + '/' + item.student_max_number }</td> */ }
+														<td>{ moment( item?.classroom?.created_at ).format( "DD/MM/yyyy" ) }</td>
 
 														<td >
 															<div className="d-flex justify-between align-items-center align-middle">
-																{ role !== 3 &&
+																<button className={ 'btn btn-sm btn-info text-nowrap' }
+																	style={ { padding: '3px 8px', width: 65 } }
+																	onClick={ () => { setShowModal( true ); setId( item?.classroom?.id ) } }>Edit</button>
+																<button className={ 'btn btn-sm btn-danger text-nowrap ml-2' } style={ { padding: '3px 8px', width: 65 } }
+																	onClick={ () => { setIdDel( item?.classroom?.id ) } }>Remove</button>
+																<button className={ 'btn btn-sm btn-warning text-nowrap' }
+																	style={ { padding: '3px 8px', width: 65 } }
+																	onClick={ () => joinData( item?.classroom?.id ) }>Join</button>
+																{/* { role !== 3 &&
 																	<>
-																		<button className={ 'btn btn-sm btn-info text-nowrap' }
-																			style={ { padding: '3px 8px', width: 65 } }
-																			onClick={ () => { setShowModal( true ); setId( item.id ) } }>Edit</button>
-																		<button className={ 'btn btn-sm btn-danger text-nowrap ml-2' } style={ { padding: '3px 8px', width: 65 } }
-																			onClick={ () => { setIdDel( item.id ) } }>Remove</button>
+
 																	</>
 																	||
-																	!item.is_joined && <button  className={ 'btn btn-sm btn-warning text-nowrap' } 
-																	style={ { padding: '3px 8px', width: 65 } }
-																	onClick={ () => joinData(item.id) }>Join</button>
+																	!item.is_joined && 
+																	
 
-																}
+																} */}
 
 															</div>
 

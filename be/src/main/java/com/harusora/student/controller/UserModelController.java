@@ -25,7 +25,7 @@ public class UserModelController {
             @RequestBody UserModelRequest request
     ) {
        try {
-           return BaseResponse.ofSucceeded(userService.create(request).getResult());
+           return BaseResponse.ofSucceeded(userService.create(request));
        } catch (Exception e) {
            log.debug("error create class", e);
            String message = e.getMessage();
@@ -44,7 +44,7 @@ public class UserModelController {
             @RequestBody UserModelRequest request
     ) {
         try {
-            var response = BaseResponse.ofSucceeded(userService.update(id,request).getResult());
+            var response = BaseResponse.ofSucceeded(userService.update(id,request));
             log.info("info--------> ", response);
             return response;
 
@@ -86,7 +86,7 @@ public class UserModelController {
             @PathVariable("id") int id
     ) {
         try {
-            return BaseResponse.ofSucceeded(userService.findOne(id).getResult());
+            return BaseResponse.ofSucceeded(userService.findOne(id));
         } catch (Exception e) {
             log.debug("error create user", e);
             String message = e.getMessage();

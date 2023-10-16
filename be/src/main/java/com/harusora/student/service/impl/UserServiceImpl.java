@@ -1,5 +1,9 @@
 package com.harusora.student.service.impl;
+import com.harusora.student.model.ClassModel;
+import com.harusora.student.model.CourseModel;
 import com.harusora.student.model.UserModel;
+import com.harusora.student.repository.ClassModelRepository;
+import com.harusora.student.repository.CourseModelRepository;
 import com.harusora.student.repository.UserModelRepository;
 import com.harusora.student.request.UserModelRequest;
 import com.harusora.student.response.UserModelResponse;
@@ -21,6 +25,8 @@ import static java.lang.Integer.parseInt;
 public class UserServiceImpl implements UserModelService {
 
     private final UserModelRepository userRepo;
+    private final CourseModelRepository courseRepo;
+    private final ClassModelRepository classRepo;
 //    private final  userRepo;
     private final PasswordEncoder passwordEncoder;
 
@@ -42,7 +48,27 @@ public class UserServiceImpl implements UserModelService {
             user.setCreated_at(new Date());
             user.setGender(userDto.getGender());
             var save = userRepo.save(user);
-            UserModelResponse response = new UserModelResponse(Optional.of(save));
+            List<CourseModel> courseModel = null;
+            if(save != null && !userDto.getCourseIds().isEmpty()) {
+                    String id = "";
+                    for(int item :userDto.getCourseIds()) {
+                        Optional<CourseModel> course = courseRepo.findById(item);
+                        if(!course.isEmpty()) {
+                            CourseModel courseData = course.get();
+                            courseData.setUser_id(save.getId());
+                            courseData.setUpdated_at(new Date());
+
+                            courseRepo.save(courseData);
+
+                        }
+                    }
+                    id = userDto.getCourseIds().toString();
+                    log.info("String id-------> " + id);
+                if(save.getRole() == 2) {
+                    courseModel =  courseRepo.findTeacherCourse(id);
+                }
+            }
+            UserModelResponse response = new UserModelResponse(Optional.of(save), courseModel, null);
             return response;
     }
 
@@ -50,13 +76,19 @@ public class UserServiceImpl implements UserModelService {
     public List<UserModel> findAll(String page, String page_size, String email, String phone, String status, String role) {
         log.info("page-------> " + ((parseInt(page) - 1) * parseInt(page_size)) + page_size);
         List<UserModel> users = userRepo.findAndCount((parseInt(page) - 1) * parseInt(page_size), parseInt(page_size), email, role, phone, status);
+//        List<UserModel> userResponse = new List<userResponse>()
+//        if(!users.isEmpty()) {
+//            for()
+//        }
         return users;
     }
 
     @Override
     public UserModelResponse findOne(int id) {
         Optional<UserModel> user = userRepo.findById(id);
-        return new UserModelResponse(user);
+        List<CourseModel> courseModel = courseRepo.findCourses(id );
+//        List<ClassModel> classModels = classRepo.findClassUser(id + "", "");
+        return new UserModelResponse(user, courseModel, null);
     }
 
     @Override
@@ -77,7 +109,18 @@ public class UserServiceImpl implements UserModelService {
         user.setUpdated_at(new Date());
         user.setGender(userDto.getGender());
         var response = userRepo.save(user);
-        return new UserModelResponse(Optional.of(response));
+        if(response != null && !userDto.getCourseIds().isEmpty()) {
+            for(int item :userDto.getCourseIds()) {
+                Optional<CourseModel> course = courseRepo.findById(item);
+                if(!course.isEmpty()) {
+                    CourseModel courseData = course.get();
+                    courseData.setUser_id(response.getId());
+                    courseData.setUpdated_at(new Date());
+                    courseRepo.save(courseData);
+                }
+            }
+        }
+        return new UserModelResponse(Optional.of(response), null, null);
 
     }
 

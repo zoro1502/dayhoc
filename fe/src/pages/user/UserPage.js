@@ -44,7 +44,7 @@ function UserPage ()
 	useEffect( () =>
 	{
 		paging.page = 1;
-		getUserList( { ...paging } );
+		getUserList( { page: 1, page_size: 20 } );
 	}, [ roles ] );
 
 	const {localtion} = useLocation();
@@ -148,9 +148,12 @@ function UserPage ()
 									as="h4">{ roles.role == 'teacher' ? 'Teacher list' : 'Student list' }
 									{ localStorage.getItem( 'role' ) === '1' &&
 										<button onClick={ () => setShowModal( true ) }
+										type="button" className="btn btn-info" style={ { padding: '6px 14px', fontSize: 14 } }>
+										<span>Create</span></button>
+									}
+									<button onClick={ () => setShowModal( true ) }
 											type="button" className="btn btn-info" style={ { padding: '6px 14px', fontSize: 14 } }>
 											<span>Create</span></button>
-									}
 								</Card.Title>
 								<div className="my-4">
 									<FilterUser
@@ -173,7 +176,8 @@ function UserPage ()
 
 											<th className="border-0 text-nowrap">Status</th>
 											<th className="border-0">Address</th>
-											{ localStorage.getItem( 'role' ) === '1' && <th className="border-0 text-nowrap">action</th> }
+											{ localStorage.getItem( 'role' ) === '1' &&  <></>}
+											<th className="border-0 text-nowrap">action</th>
 
 										</tr>
 									</thead>
@@ -191,11 +195,13 @@ function UserPage ()
 														{ item.address || 'N/A' }
 													</td>
 													{
-														localStorage.getItem( 'role' ) === '1' && <td className="d-flex justify-between align-items-center">
+														localStorage.getItem( 'role' ) === '1' && 
+														<></>
+													}
+													<td className="d-flex justify-between align-items-center">
 															<button className={ 'btn btn-sm btn-info text-nowrap' } style={ { padding: '3px 8px', width: 65 } } onClick={ () => { setId( item.id ); setShowModal( true ) } }>Edit</button>
 															{/* <button className={ 'btn btn-sm btn-danger ml-2 text-nowrap' } style={ { padding: '3px 8px', width: 65 } } onClick={ () => { setShowModal( true ); setId( item.id ) } }></button> */ }
 														</td>
-													}
 												</tr>
 											) )
 										) : (
@@ -216,7 +222,7 @@ function UserPage ()
 								<div className="mx-auto my-4">
 									<Pagination
 										onChange={ e =>
-											getUserList( { ...paging, page: e, ...params } )
+											getUserList( {  page: e,page_size: paging?.page_size || 20, ...params } )
 										}
 										pageSize={ paging.page_size }
 										defaultCurrent={ paging.page }

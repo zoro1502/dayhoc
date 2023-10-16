@@ -36,5 +36,11 @@ public interface ClassModelRepository extends JpaRepository<ClassModel, Integer>
     @Query(value = "Select * from classes u " +
             "WHERE u.course_id = :course_id",nativeQuery = true)
     List<ClassModel> getClassModelByCourse_id( @Param("course_id") int course_id);
+
+
+    @Query(value = "Select c.* from classes c LEFT JOIN user_courses_classes uc ON c.id = uc.class_id " +
+            " WHERE TRUE AND (:class_id is null or :class_id ='' or c.id = :class_id) " +
+            " AND uc.user_id=:user_id",nativeQuery = true)
+    List<ClassModel> findClassUser(@Param("user_id") String user_id, @Param("class_id") String class_id);
 //    void deleteClassModelByCourse_id( @Param("course_id") int course_id);
 }

@@ -104,7 +104,7 @@ public class ClassStudentController {
             @PathVariable("id") int id
     ) {
         try {
-            return BaseResponse.ofSucceeded(classModelService.findOne(id).getResult());
+            return BaseResponse.ofSucceeded(classModelService.findOne(id));
         } catch (Exception e) {
             log.debug("error create user", e);
             String message = e.getMessage();
@@ -121,7 +121,7 @@ public class ClassStudentController {
     ) {
         try {
             classModelService.deleteById(id);
-            return BaseResponse.ofSucceeded(classModelService.findOne(id).getResult());
+            return BaseResponse.ofSucceeded(classModelService.findOne(id));
         } catch (Exception e) {
             log.debug("error create user", e);
             String message = e.getMessage();

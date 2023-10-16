@@ -11,7 +11,7 @@ import java.util.List;
 
 public interface CourseService {
     CourseReponse create(CourseModelRequest courseDto);
-    List<CourseModel> findAll(String page, String page_size, String code, String course_id);
+    List<CourseReponse> findAll(String page, String page_size, String code, String course_id);
     CourseReponse findOne(int id);
 
     CourseReponse update(int id, CourseModelRequest courseDto);

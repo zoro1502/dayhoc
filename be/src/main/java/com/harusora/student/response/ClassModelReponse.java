@@ -2,6 +2,7 @@ package com.harusora.student.response;
 
 import com.harusora.student.model.ClassModel;
 import com.harusora.student.model.CourseModel;
+import com.harusora.student.model.UserModel;
 import com.harusora.student.request.ClassModelRequest;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -19,5 +20,11 @@ import java.util.Optional;
 @Accessors(chain = true)
 public class ClassModelReponse {
 
-    private Optional<ClassModel> result;
+    private Optional<ClassModel> classroom;
+
+    private Optional<UserModel> teacher;
+
+    private UserModel student;
+
+    private Optional<CourseModel> course;
 }

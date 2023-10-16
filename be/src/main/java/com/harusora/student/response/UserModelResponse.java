@@ -1,5 +1,7 @@
 package com.harusora.student.response;
 
+import com.harusora.student.model.ClassModel;
+import com.harusora.student.model.CourseModel;
 import com.harusora.student.model.UserModel;
 import com.harusora.student.user.Role;
 import jakarta.persistence.EnumType;
@@ -12,6 +14,7 @@ import lombok.experimental.Accessors;
 
 import java.util.Collection;
 import java.util.Date;
+import java.util.List;
 import java.util.Optional;
 
 @Data
@@ -20,5 +23,7 @@ import java.util.Optional;
 @NoArgsConstructor
 @Accessors(chain = true)
 public class UserModelResponse {
-    private Optional<UserModel> result;
+    private Optional<UserModel> user;
+    private List<CourseModel> courses;
+    private List<ClassModel> class_rooms;
 }

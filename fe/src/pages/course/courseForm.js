@@ -69,9 +69,9 @@ export const CourseForm = ( props ) =>
 	{
 		const response = await userApi.getUsers(
 			{ page: 1, page_size: 1000, status: 1, role: 1 } );
-		if ( response.status === 'success' && response.data.result.length > 0 )
+		if ( response.status === 'success' && response.data.length > 0 )
 		{
-			let user = response.data.result.reduce( ( arr, e ) =>
+			let user = response.data.reduce( ( arr, e ) =>
 			{
 				arr.push( {
 					value: e.id,

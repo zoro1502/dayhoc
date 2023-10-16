@@ -3,13 +3,13 @@ import React, { useEffect, useState } from "react";
 import { Modal, Form } from "react-bootstrap";
 import { MDBSpinner } from 'mdb-react-ui-kit';
 import
-	{
-		Card,
-		Table,
-		Container,
-		Row,
-		Col,
-	} from "react-bootstrap";
+{
+	Card,
+	Table,
+	Container,
+	Row,
+	Col,
+} from "react-bootstrap";
 import moment from "moment";
 import { Pagination, message } from "antd";
 import { useDispatch } from "react-redux";
@@ -47,13 +47,14 @@ function CoursePage ()
 		dispatch( toggleShowLoading( true ) );
 		const response = await departmentApi.getDepartments( filters );
 		await timeDelay( 1000 );
-		if ( response.status === 'success' || response.status === 200 )
+		if ( response?.status === 'success' || response?.status === 200 )
 		{
-			setCourses( response.data.result );
-			setPaging( { ...response.data.meta } );
+		
+			setCourses( response?.data );
+			setPaging( { ...response?.meta } );
 		} else
 		{
-			message.error( response.message || 'Error! Please try again' )
+			message.error( response?.message || 'Error! Please try again' )
 		}
 		dispatch( toggleShowLoading( false ) );
 	};
@@ -64,8 +65,8 @@ function CoursePage ()
 		{
 			const response = await departmentApi.deleteDepartment( id );
 			dispatch( toggleShowLoading( true ) );
-			await timeDelay(1000);
-			if ( response.status === 200 || response.status === 'success' )
+			await timeDelay( 1000 );
+			if ( response?.status === 200 || response?.status === 'success' )
 			{
 				getCourseList( { page: 1 } );
 				setShowModal( false );
@@ -73,8 +74,8 @@ function CoursePage ()
 				message.success( 'Delete successfully!' );
 			} else
 			{
-				message.error( response.message || 'Error! Please try again' );
-			dispatch( toggleShowLoading( false ) );
+				message.error( response?.message || 'Error! Please try again' );
+				dispatch( toggleShowLoading( false ) );
 
 			}
 		} catch ( e )
@@ -94,10 +95,12 @@ function CoursePage ()
 						<Card className="strpied-tabled-with-hover">
 							<Card.Header >
 								<Card.Title className={ 'd-flex justify-content-between' } as="h4">Course List
-									{ ( role === 1 || role === 2 ) && <button onClick={ () => setShowModal( true ) }
+									{/* { ( role === 1 || role === 2 ) && 
+									 } */}
+									 <button onClick={ () => setShowModal( true ) }
 										type="button" className="btn btn-info" style={ { padding: '6px 14px', fontSize: 14 } }>
 										<span>Create</span>
-									</button> }
+									</button>
 								</Card.Title>
 
 								<div className="my-4">
@@ -120,7 +123,7 @@ function CoursePage ()
 											<th className="border-0">Created at</th>
 											{ role !== 3 &&
 												<>
-													
+
 													<th className="border-0">action</th>
 												</>
 											}
@@ -144,23 +147,24 @@ function CoursePage ()
 												courses.map( ( item, index ) => (
 													<tr key={ index }>
 														<td>{ ( paging.page - 1 ) * paging.page_size + ( index + 1 ) }</td>
-														<td className="text-break" style={ { minWidth: 100 } }>{ item.name || 'N/A' }</td>
-														<td className="text-break" style={ { minWidth: 100 } }>{ item.code || 'N/A' }</td>
-														<td className="text-break" style={ { minWidth: 100 } }>{ item.user?.full_name || 'N/A' }</td>
+														<td className="text-break" style={ { minWidth: 100 } }>{ item?.course?.name || 'N/A' }</td>
+														<td className="text-break" style={ { minWidth: 100 } }>{ item?.course?.code || 'N/A' }</td>
+														<td className="text-break" style={ { minWidth: 100 } }>{ item?.teacher?.full_name || 'N/A' }</td>
 
 														{ role === 1 &&
 															<>
-																<td>{ moment( item.created_at ).format( "DD/MM/yyyy" ) }</td>
-																<td className="d-flex justify-between align-items-center">
-																	<button className={ 'btn btn-sm btn-info text-nowrap' } 
-																	style={ { padding: '3px 8px', width: 65 } } 
-																	onClick={ () => {setShowModal( true ); setId(item.id)} }>Edit</button>
-																	<button className={ 'btn btn-sm btn-danger text-nowrap ml-2' } style={ { padding: '3px 8px', width: 65 } }
-																		onClick={ () => { setIdDel( item.id ) } }>Remove</button>
-																</td>
+
 															</>
 
 														}
+														<td>{ moment( item.created_at ).format( "DD/MM/yyyy" ) }</td>
+														<td className="d-flex justify-between align-items-center">
+															<button className={ 'btn btn-sm btn-info text-nowrap' }
+																style={ { padding: '3px 8px', width: 65 } }
+																onClick={ () => { setShowModal( true ); setId( item.id ) } }>Edit</button>
+															<button className={ 'btn btn-sm btn-danger text-nowrap ml-2' } style={ { padding: '3px 8px', width: 65 } }
+																onClick={ () => { setIdDel( item.id ) } }>Remove</button>
+														</td>
 													</tr>
 												) )
 											) : (
@@ -212,7 +216,7 @@ function CoursePage ()
 					getCourseList={ getCourseList }
 					params={ params }
 					paging={ paging }
-					setId={setId}
+					setId={ setId }
 				/>
 			</Container >
 		</>

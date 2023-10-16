@@ -53,23 +53,25 @@ export const UserForm = ( props ) =>
 			{
 				let file = [];
 				file.push( {
-					uid: file.length,
-					name: data.avatar,
+					uid: file?.user?.length,
+					name: data?.user?.avatar,
 					status: 'done',
-					url: data.avatar || DEFAULT_IMG,
+					url: data.user?.avatar || DEFAULT_IMG,
 					default: true
 				} );
 				let formValue = {
-					full_name: data.full_name,
-					email: data.email,
-					address: data.address,
-					gender: data.gender,
-					status: data.status,
-					phone: data.phone,
-					birth_day: data.birth_day ? moment(data.birth_day).format('yyyy-MM-DD') : null,
-					role: data.role,
-					image: file
+					full_name: data?.user?.full_name,
+					email: data?.user?.email,
+					address: data?.user?.address,
+					gender: data?.user?.gender,
+					status: data?.user?.status,
+					phone: data?.user?.phone,
+					birth_day: data?.user?.birth_day ? moment(data?.user?.birth_day).format('yyyy-MM-DD') : null,
+					role: data?.user?.role,
+					image: file,
+					courseIds: data.courses?.map(item => item.id)
 				}
+				setIsTeacher(data?.user?.role == 2)
 				setFiles( file )
 				form.setFieldsValue( formValue )
 			}
@@ -98,13 +100,16 @@ export const UserForm = ( props ) =>
 	const submitForm = async ( e ) =>
 	{
 		dispatch( toggleShowLoading( true ) )
-		let avatar = await uploadApi.uploadFile( files );
+		// let avatar = await uploadApi.uploadFile( files );
 
 		let formData = { ...e };
 		let res;
 		 
 		delete formData.image;
-		formData.avatar = avatar;
+		formData.avatar = null;
+		if(formData.role != 2) {
+			formData.courseIds = [];
+		}
 		if(props.id) {
 			delete formData.email;
 			res = await userApi.updateUser(props.id, formData );
@@ -118,7 +123,7 @@ export const UserForm = ( props ) =>
 			setFiles( [] )
 			resetForm(form)
 			message.success( 'Successfully' )
-			props.getUserList( { ...props.paging, role: props.role, page: 1 } );
+			props.getUserList( { page: props.page, page_size: props.page_size, role: props.role, page: 1 } );
 		} else
 		{
 			setMes( res.message );
@@ -202,7 +207,7 @@ export const UserForm = ( props ) =>
 						</div>
 
 						<div className="col-md-3">
-							<Form.Item
+							{/* <Form.Item
 								label="Images"
 								name="image"
 								accept="images/**"
@@ -216,7 +221,7 @@ export const UserForm = ( props ) =>
 										<div style={ { marginTop: 8 } }>Upload</div>
 									</div> }
 								</Upload>
-							</Form.Item>
+							</Form.Item> */}
 						</div>
 
 						<div className="col-md-9">
@@ -269,7 +274,7 @@ export const UserForm = ( props ) =>
 
 						{ isTeacher &&
 							<div className="col-md-12">
-								<Form.Item name="courses" label="Courses"
+								<Form.Item name="courseIds" label="Courses"
 									rules={ [ { required: true } ] }
 									className=' d-block'>
 									<Select

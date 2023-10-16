@@ -83,7 +83,7 @@ public class CourseController {
 //            @RequestBody UserModelRequest request
     ) {
         try {
-             return BaseResponse.ofSucceeded(courseService.findOne(id).getResult());
+             return BaseResponse.ofSucceeded(courseService.findOne(id));
         } catch (Exception e) {
             log.debug("error create user", e);
             String message = e.getMessage();
@@ -99,7 +99,7 @@ public class CourseController {
     ) {
         try {
             courseService.deleteById(id);
-            return BaseResponse.ofSucceeded(courseService.findOne(id).getResult());
+            return BaseResponse.ofSucceeded(courseService.findOne(id));
         } catch (Exception e) {
             log.debug("error create user", e);
             String message = e.getMessage();

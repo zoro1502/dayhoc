@@ -17,7 +17,8 @@ import { toggleShowLoading } from "redux/actions/common-action";
 import { timeDelay } from "api/common";
 import { FilterExercise } from "./filterExercise";
 import { genStatusClass } from "api/common";
-import { formUpdateStudent } from "./formUpdateStudent";
+import { FormUpdateStudent } from "./formUpdateStudent";
+import { buildImage } from "api/common";
 
 function ExercisesStudentPage ()
 {
@@ -51,16 +52,16 @@ function ExercisesStudentPage ()
 		dispatch( toggleShowLoading( true ) );
 		const response = await departmentApi.getExercisesStudent( filters );
 		await timeDelay( 1000 );
-		if ( response.status === 'success' || response.status === 200 )
+		if ( response?.status === 'success' || response?.status === 200 )
 		{
-			setExercises( response.data.result || [] );
-			if ( response.data.meta )
+			setExercises( response?.data || [] );
+			if ( response?.meta )
 			{
-				setPaging( { ...response.data.meta } );
+				setPaging( { ...response?.meta } );
 			}
 		} else
 		{
-			message.error( response.message || 'Error! Please try again' )
+			message.error( response?.message || 'Error! Please try again' )
 		}
 		dispatch( toggleShowLoading( false ) );
 	};
@@ -114,20 +115,20 @@ function ExercisesStudentPage ()
 													<tr key={ index }>
 														<td>{ ( paging.page - 1 ) * paging.page_size + ( index + 1 ) }</td>
 														<td className="text-break" style={ { minWidth: 100 } }>
-															{ item.exercise && item.exercise.title || 'N/A' }
+															{ item.title || 'N/A' }
 														</td>
 														<td className="text-break" style={ { minWidth: 100 } }>
 															{
-																item.exercise && item.exercise.file && <a type="download" href={ item.exercise.file } target="_blank">{ item.exercise.file }</a> || 'N/A'
+																item.question && <a type="download" href={ item.question && buildImage(item.question) } target="_blank">{ item.question }</a> || 'N/A'
 															}
 														</td>
 														<td className="text-break" style={ { minWidth: 100 } }>
 															{
-																item.file && <a type="download" href={ item.file } target="_blank">{ item.file }</a> || 'N/A'
+																item.answer && <a type="download" href={ item.answer && buildImage(item.answer) } target="_blank">{ item.answer }</a> || 'N/A'
 															}
 														</td>
 														<td className="text-break" style={ { minWidth: 80 } }>
-															{ item.classroom && item.classroom.name || 'N/A' }
+															{ item.class_name || 'N/A' }
 														</td>
 
 														<td className="tex">
@@ -139,16 +140,16 @@ function ExercisesStudentPage ()
 														</td>
 
 														<td className="text-break" style={ { minWidth: 100 } }>
-															{ item.exercise && item.exercise.deadline && moment( item.exercise.deadline ).format( "DD/MM/yyyy" ) || 'N/A' }
+															{ item.deadline && moment( item.deadline ).format( "DD/MM/yyyy" ) || 'N/A' }
 														</td>
 														{ role !== 2 &&
 															<td className="text-break" style={ { minWidth: 100 } }>
-																{ item.exercise && item.exercise.user && item.exercise.user.full_name || 'N/A' }
+																{ item.teacher_name || 'N/A' }
 															</td>
 														}
 														{ role !== 3 &&
 															<td className="text-break" style={ { minWidth: 100 } }>
-																{ item.student && item.student.full_name || 'N/A' }
+																{ item.student_name || 'N/A' }
 															</td>
 														}
 														<td>{ moment( item.created_at ).format( "DD/MM/yyyy" ) }</td>
@@ -158,7 +159,8 @@ function ExercisesStudentPage ()
 																	style={ { padding: '3px 8px', width: 65 } }
 																	onClick={ () =>
 																	{
-																		setExercise( item ); setShowModal( true );
+																		setExercise( item );
+																		 setShowModal( true );
 																	} }>Edit</button>
 															</td>
 														}
@@ -185,7 +187,7 @@ function ExercisesStudentPage ()
 								<div className="mx-auto my-4">
 									<Pagination
 										onChange={ e =>
-											getProviderList( { ...paging, page: e, ...params } )
+											getExerciseList( { page: e, page_size: paging.page_size,  ...params } )
 										}
 										pageSize={ paging.page_size }
 										defaultCurrent={ paging.page }
@@ -193,7 +195,7 @@ function ExercisesStudentPage ()
 									/>
 								</div>
 							}
-							<formUpdateStudent
+							<FormUpdateStudent
 								showModal={ showModal }
 								exercise={ exercise }
 								setShowModal={ setShowModal }

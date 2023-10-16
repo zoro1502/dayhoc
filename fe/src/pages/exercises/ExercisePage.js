@@ -18,6 +18,7 @@ import { timeDelay } from "api/common";
 import { FilterExercise } from "./filterExercise";
 import { ExercisesForm } from "./exerciseForm";
 import { genStatusClass } from "api/common";
+import { buildImage } from "api/common";
 
 function ExercisesPage ()
 {
@@ -147,7 +148,7 @@ function ExercisesPage ()
 														<td className="text-break" style={ { minWidth: 100 } }>{ item?.exercise?.title || 'N/A' }</td>
 														<td className="text-break" style={ { minWidth: 100 } }>
 															{
-																item?.exercise?.file && <a type="download" href={ item?.exercise?.file } target="_blank">{ item?.exercise?.file }</a> || 'N/A'
+																item?.exercise?.file && <a type="download" href={ item?.exercise?.file && buildImage( item?.exercise?.file ) } target="_blank">{ item?.exercise?.file }</a> || 'N/A'
 															}
 														</td>
 														<td>

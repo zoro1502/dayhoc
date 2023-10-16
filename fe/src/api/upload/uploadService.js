@@ -26,14 +26,13 @@ const uploadApi = {
 				{
 					const formData = new FormData();
 					formData.append( 'file', files[0].originFileObj );
-
-					const res = await axios.post( `${ process.env.REACT_APP_URL_API }upload/image`,
+					console.log(process.env.REACT_APP_URL_UPLOAD);
+					const res = await axios.post( `${ process.env.REACT_APP_URL_UPLOAD }upload/image`,
 						formData, { headers: { 'Accept': 'multipart/form-data' } } );
 						let data = res.data;
-						console.log(res.data);
 					if ( data?.status === 'success' )
 					{
-						avatar = data.data.destination;
+						avatar = data?.data?.filename;
 					}
 				} else
 				{
@@ -48,6 +47,9 @@ const uploadApi = {
 		}
 
 	},
+
+
+	
 }
 
 export default uploadApi;

@@ -94,17 +94,17 @@ export const ExercisesForm = ( props ) =>
 				setMes( 'You must choose a file' );
 				return;
 			}
-			// let file = await uploadApi.uploadFile( [
-			// 	{
-			// 		originFileObj: files[ 0 ]
-			// 	}
-			// ] );
-			// if ( !file || file == '' )
-			// {
-			// 	setMes( 'Upload file error' );
-			// 	return;
-			// }
-			// formData.file = file;
+			let file = await uploadApi.uploadFile( [
+				{
+					originFileObj: files[ 0 ]
+				}
+			] );
+			if ( !file || file == '' )
+			{
+				setMes( 'Upload file error' );
+				return;
+			}
+			formData.file = file;
 		}
 		let res;
 

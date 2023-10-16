@@ -171,4 +171,8 @@ export const genStatusClass = ( status ) =>
 	);
 }
 
+export const buildImage = ( img ) =>
+{
+	return process.env.REACT_APP_URL_UPLOAD + "upload/" + img;
+}
 export const DEFAULT_IMG =  require( "assets/img/default-avatar.png" )

@@ -92,7 +92,7 @@ const departmentApi = {
 
 	async updateExerciseStudent ( id, data )
 	{
-		return await axiosClient.put( `exercises/submit/${ id }`, data );
+		return await axiosClient.post( `exercises/submit/${ id }`, data );
 	},
 
 	async deleteExercise ( id, data )

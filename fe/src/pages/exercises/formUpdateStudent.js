@@ -12,34 +12,34 @@ import departmentApi from "api/admin/departmentService";
 import { UploadOutlined } from "@ant-design/icons";
 import uploadApi from "api/upload/uploadService";
 import moment from "moment";
+import TextArea from "antd/lib/input/TextArea";
 
-export const formUpdateStudent = ( props ) =>
+export const FormUpdateStudent = ( props ) =>
 {
 	const [ form ] = useForm();
 	const [ files, setFiles ] = useState( [] );
 	const [ mes, setMes ] = useState( '' );
 	const [ isChange, setIsChange ] = useState( false );
 
-	console.log(props.exercise);
 
 	useEffect( () =>
 	{
 		if ( props.showModal && props.exercise )
 		{
+			form.setFieldValue( { title: props.exercise?.title } )
 			if ( props.role === 2 )
 			{
 				form.setFieldsValue( { mark: props.exercise.mark } )
 			} else
 			{
-				if ( props.exercise.file )
+				if ( props.exercise.answer )
 				{
-					form.setFieldsValue( { file: props.exercise.file } )
+					form.setFieldsValue( { file: props.exercise.answer } )
 				}
 			}
 		}
 
 	}, [ props.showModal ] )
-
 
 	const dispatch = useDispatch();
 
@@ -68,17 +68,16 @@ export const formUpdateStudent = ( props ) =>
 		}
 		let res;
 
-		res = await departmentApi.updateExerciseStudent( props.id, formData );
-		if ( res.status === 'success' )
+		res = await departmentApi.updateExerciseStudent( props.exercise?.exercise_id, formData );
+		if ( res?.status === 'success' )
 		{
-
 			reset();
 			message.success( 'Successfully' )
 			props.getExerciseList( { ...props.paging, page: 1 } );
 		} else
 		{
 			setMes( res?.message );
-			message.error( res.message )
+			message.error( res?.message )
 			dispatch( toggleShowLoading( false ) )
 
 		}
@@ -109,14 +108,21 @@ export const formUpdateStudent = ( props ) =>
 		setIsChange( false );
 		props.setExercise( null )
 	}
-	console.log( props );
 
 	return (
 		<Modal show={ props.showModal } size="lg" dialogClassName="dialog-style">
 			<Modal.Header style={ { justifyContent: 'center' } }>
-				<div style={ { fontSize: 21 } }>{ props.role === 2 ? 'Update Mark' : 'Update File' }</div>
+				<h2 style={ { fontSize: 21 } }>{ props.role === 2 ? 'Update Mark' : 'Update File Answer' }</h2>
 			</Modal.Header>
 			<Modal.Body>
+				<div className="row p-3">
+					<h4 className="col-3 col-sm-2 mb-0 fw-bold">
+						Bài tập:
+					</h4>
+					<h4 className="col-9 col-sm-10">
+						{ props.exercise?.title }
+					</h4>
+				</div>
 				<Form
 					className='p-3'
 					name='nest-messages form'
@@ -139,9 +145,9 @@ export const formUpdateStudent = ( props ) =>
 								<Upload { ...fileUpload } maxCount={ 1 } accept=".xlsx,.xls,.doc, .docx,.txt,.pdf">
 									<Button icon={ <UploadOutlined /> }>Select File</Button>
 								</Upload>
-								{ !isChange && data?.file && <span>{ data.file }</span> }
+								
 							</Form.Item>
-					}
+					}{ !isChange && props.exercise?.answer && <span className="text-secondary my-5">File Answer: { props.exercise?.answer }</span> }
 					<span className="text-danger">{ mes }</span>
 					<div className='d-flex justify-content-center'>
 						<button type="submit"
@@ -153,7 +159,7 @@ export const formUpdateStudent = ( props ) =>
 							type="button"
 							className="btn btn-secondary text-center"
 							style={ { marginRight: 10, padding: '10px 10px' } }
-							onClick={ () => reset }>
+							onClick={ () => reset() }>
 							Cancel
 						</button>
 					</div>

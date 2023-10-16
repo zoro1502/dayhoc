@@ -73,8 +73,9 @@ public class ExerciseController {
 
     ) {
         try {
+            var paging = exerciseService.countStudentEx(page, page_size, title, status, class_id, user_id);
+            System.out.println("Paging" + String.valueOf(paging));
             var response = exerciseService.findStudentEx(page, page_size, title, class_id, status, user_id);
-            var paging = exerciseService.countByCondition(page, page_size, title, status, class_id, user_id);
             return BaseResponse.ofSucceeded(response).setMeta(paging);
         } catch (Exception e) {
             log.debug("error create user", e);

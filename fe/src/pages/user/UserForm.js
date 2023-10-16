@@ -13,6 +13,7 @@ import { CourseService } from "api/admin/courseService";
 import uploadApi from "api/upload/uploadService";
 import { DEFAULT_IMG } from "api/common";
 import moment from "moment";
+import { buildImage } from "api/common";
 
 export const UserForm = ( props ) =>
 {
@@ -56,7 +57,7 @@ export const UserForm = ( props ) =>
 					uid: file?.user?.length,
 					name: data?.user?.avatar,
 					status: 'done',
-					url: data.user?.avatar || DEFAULT_IMG,
+					url: data.user?.avatar && buildImage(data.user?.avatar) || DEFAULT_IMG,
 					default: true
 				} );
 				let formValue = {
@@ -88,8 +89,8 @@ export const UserForm = ( props ) =>
 			let course = response.data.reduce( ( arr, e ) =>
 			{
 				arr.push( {
-					value: e.id,
-					label: e.name
+					value: e.course?.id,
+					label: e?.course?.name
 				} )
 				return arr;
 			}, [] );
@@ -100,13 +101,13 @@ export const UserForm = ( props ) =>
 	const submitForm = async ( e ) =>
 	{
 		dispatch( toggleShowLoading( true ) )
-		// let avatar = await uploadApi.uploadFile( files );
+		let avatar = await uploadApi.uploadFile( files );
 
 		let formData = { ...e };
 		let res;
-		 
+		 console.log(avatar);
 		delete formData.image;
-		formData.avatar = null;
+		formData.avatar = avatar;
 		if(formData.role != 2) {
 			formData.courseIds = [];
 		}
@@ -207,7 +208,7 @@ export const UserForm = ( props ) =>
 						</div>
 
 						<div className="col-md-3">
-							{/* <Form.Item
+							<Form.Item
 								label="Images"
 								name="image"
 								accept="images/**"
@@ -221,7 +222,7 @@ export const UserForm = ( props ) =>
 										<div style={ { marginTop: 8 } }>Upload</div>
 									</div> }
 								</Upload>
-							</Form.Item> */}
+							</Form.Item>
 						</div>
 
 						<div className="col-md-9">

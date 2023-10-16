@@ -4,9 +4,7 @@ import com.harusora.student.model.*;
 import com.harusora.student.repository.*;
 import com.harusora.student.request.ExerciseModelRequest;
 import com.harusora.student.request.StudentExerciseRequest;
-import com.harusora.student.response.ExerciseReponse;
-import com.harusora.student.response.StudentExReponse;
-import com.harusora.student.response.StudentExerciseResponse;
+import com.harusora.student.response.*;
 import com.harusora.student.security.common.BaseResponse;
 import com.harusora.student.service.interfaceService.ExerciseService;
 import lombok.AllArgsConstructor;
@@ -70,15 +68,45 @@ public class ExerciseServiceImpl implements ExerciseService {
     }
 
     @Override
-    public List<StudentExReponse> findStudentEx(String page, String page_size, String title, String class_id, String status, String user_id) {
-        List<ExerciseModel> data = exerciseRepo.findAndCount((parseInt(page) - 1) * parseInt(page_size), parseInt(page_size), title
+    public List<StudentExResponse> findStudentEx(String page, String page_size, String title, String class_id, String status, String user_id) {
+        List<IStudentExResponse> data = studentExRepo.findAndCount((parseInt(page) - 1) * parseInt(page_size), parseInt(page_size), title
 //                , status, class_id, user_id
         );
-        List<StudentExReponse> response = new ArrayList<>();
+        List<StudentExResponse> response = new ArrayList<>();
 
         if(!data.isEmpty()) {
-            for (ExerciseModel item: data) {
+            for (IStudentExResponse item: data) {
+//                log.debug("id ex-----------> " + item.);
+                StudentExResponse itemRes = new StudentExResponse();
 
+                itemRes.setId(item.getId());
+
+                itemRes.setExercise_id(item.getExercise_id());
+                itemRes.setTitle(item.getTitle());
+                itemRes.setExercise_status(item.getExercise_status());
+
+                itemRes.setAnswer(item.getAnswer());
+                itemRes.setQuestion(item.getQuestion());
+
+                itemRes.setClass_code(item.getClass_code());
+                itemRes.setClass_name(item.getClass_name());
+
+                itemRes.setStudent_name(item.getStudent_name());
+                itemRes.setStudent_email(item.getStudent_email());
+                itemRes.setStudent_id(item.getStudent_id());
+
+                itemRes.setTeacher_id(item.getTeacher_id());
+                itemRes.setTeacher_email(item.getTeacher_email());
+                itemRes.setTeacher_name(item.getTeacher_name());
+
+                itemRes.setExercise_created_at(item.getExercise_created_at());
+
+                itemRes.setDeadline(item.getDeadline());
+                itemRes.setMark(item.getMark());
+                itemRes.setCreated_at(item.getCreated_at());
+
+
+                response.add(itemRes);
             }
         }
         return response;
@@ -119,8 +147,21 @@ public class ExerciseServiceImpl implements ExerciseService {
     @Override
     public StudentExerciseResponse submit(int id, StudentExerciseRequest exDto) {
         Optional<ExerciseModel> exercise = exerciseRepo.findById(id);
+        if(exDto.getStudent_id() != null) {
+            Optional<UserModel> userDto = userRepo.findById(exDto.getStudent_id());
+            if(userDto.isEmpty() || (!userDto.isEmpty() && userDto.get().getRole() != 3)) {
+                throw new RuntimeException("Không tìm thấy student tương ứng");
+            }
+        }
+
         if(exercise.isEmpty()) {
             throw new RuntimeException("Không tìm thấy bài tập tương ứng");
+        }
+
+
+        Optional<ClassModel> classroomDto = classRepo.findById(exercise.get().getClass_id());
+        if(classroomDto.isEmpty() || (!classroomDto.isEmpty() && classroomDto.get().getStatus() != 1)) {
+            throw new RuntimeException("Không tìm thấy lớp học tương ứng hoặc lớp học không hoạt động");
         }
         // TH học sinh nộp bài
         if(exDto.getFile() != null) {
@@ -143,7 +184,7 @@ public class ExerciseServiceImpl implements ExerciseService {
             studentEx.setClass_id(exercise.get().getClass_id());
 
         } else {
-            if(exDto.getFile() != null) {
+            if(exDto.getFile() == null) {
                 throw new RuntimeException("Vui lòng chịn file đáp án của bạn");
             }
             studentEx = new StudentHasExModel();
@@ -151,7 +192,7 @@ public class ExerciseServiceImpl implements ExerciseService {
             studentEx.setStudent_id(exDto.getStudent_id());
             studentEx.setMark((double) 0);
             studentEx.setFile(exDto.getFile());
-            studentEx.setClass_id(exDto.getClass_id());
+            studentEx.setClass_id(exercise.get().getClass_id());
             studentEx.setCreated_at(new Date());
         }
         var response = studentExRepo.save(studentEx);
@@ -181,6 +222,15 @@ public class ExerciseServiceImpl implements ExerciseService {
     @Override
     public BaseResponse.Metadata countByCondition(String page, String page_size, String title, String class_id, String status, String user_id) {
         long total = (long) exerciseRepo.count(title
+//                , status,  class_id,  user_id
+        );
+        BaseResponse.Metadata paging = new BaseResponse.Metadata("", parseInt(page) ,  parseInt(page_size), total, "", null);
+        return paging;
+    }
+
+    @Override
+    public BaseResponse.Metadata countStudentEx(String page, String page_size, String title, String status, String class_id, String user_id) {
+        long total = (long) studentExRepo.count(title
 //                , status,  class_id,  user_id
         );
         BaseResponse.Metadata paging = new BaseResponse.Metadata("", parseInt(page) ,  parseInt(page_size), total, "", null);

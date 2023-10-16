@@ -21,6 +21,8 @@ import { timeDelay } from "api/common";
 import { FilterDevice } from "./filter";
 import defaultImg from '../../assets/img/image_faildoad.png';
 import moment from "moment";
+import { DEFAULT_IMG } from "api/common";
+import { buildImage } from "api/common";
 function DevicePage ()
 {
 
@@ -581,7 +583,7 @@ function DevicePage ()
 												<tr key={ index }>
 													<td>{ ( props.paging.page - 1 ) * propspaging.page_size + ( index + 1 ) }</td>
 													<td className="text-nowrap" style={ { minWidth: 200 } }>
-														<img src={ item.avatar } alt='avatar'
+														<img src={ item.avatar && buildImage( item.avatar ) || DEFAULT_IMG } alt='avatar'
 															style={ { border: '0.5px solid', borderRadius: '5px' } }
 															height="70" width="70"
 															onError={ errorImg }

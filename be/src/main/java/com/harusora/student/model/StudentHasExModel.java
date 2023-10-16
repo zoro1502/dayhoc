@@ -24,15 +24,9 @@ public class StudentHasExModel {
     private Integer exercise_id;
 
     private Integer student_id;
-
-
     private Integer class_id;
-
-
     private String file;
     private Double mark;
-
-
     private Date created_at;
 
     private Date updated_at= new Date();

@@ -7,6 +7,7 @@ import com.harusora.student.request.ExerciseModelRequest;
 import com.harusora.student.request.StudentExerciseRequest;
 import com.harusora.student.response.CourseReponse;
 import com.harusora.student.response.ExerciseReponse;
+import com.harusora.student.response.StudentExReponse;
 import com.harusora.student.response.StudentExerciseResponse;
 import com.harusora.student.security.common.BaseResponse;
 
@@ -14,7 +15,10 @@ import java.util.List;
 
 public interface ExerciseService {
     ExerciseReponse create (ExerciseModelRequest exDto);
-    List<ExerciseModel> findAll(String page, String page_size, String title);
+    List<ExerciseReponse> findAll(String page, String page_size, String title, String status, String class_id,String user_id);
+    List<StudentExReponse> findStudentEx(String page, String page_size, String title, String status, String class_id, String user_id);
+
+
     ExerciseReponse findOne(int id);
 
     void deleteById(int id);
@@ -23,5 +27,5 @@ public interface ExerciseService {
 
     StudentExerciseResponse submit (int id, StudentExerciseRequest exDto);
 
-    BaseResponse.Metadata countByCondition(String page, String page_size, String title);
+    BaseResponse.Metadata countByCondition(String page, String page_size, String title, String status, String class_id,String user_id);
 }

@@ -38,6 +38,84 @@ public class ExerciseController {
         }
     }
 
+    @GetMapping()
+    public BaseResponse<?> getAll(
+            @RequestParam(name = "page", required = false, defaultValue = "1") String page,
+            @RequestParam(name = "page_size", required = false, defaultValue = "20") String page_size,
+            @RequestParam(name = "title", required = false, defaultValue = "") String title,
+            @RequestParam(name = "class_id", required = false, defaultValue = "") String class_id,
+            @RequestParam(name = "status", required = false, defaultValue = "") String status,
+            @RequestParam(name = "user_id", required = false, defaultValue = "") String user_id
+
+    ) {
+        try {
+            var response = exerciseService.findAll(page, page_size, title, status, class_id, user_id);
+            var paging = exerciseService.countByCondition(page, page_size, title, status, class_id, user_id);
+            return BaseResponse.ofSucceeded(response).setMeta(paging);
+        } catch (Exception e) {
+            log.debug("error create user", e);
+            String message = e.getMessage();
+            var error = new BusinessException(new BusinessErrorCode(400,  message,message, 400));
+            return BaseResponse.ofFailed(error);
+        }
+    }
+
+
+    @GetMapping("student")
+    public BaseResponse<?> getStudentExercise(
+            @RequestParam(name = "page", required = false, defaultValue = "1") String page,
+            @RequestParam(name = "page_size", required = false, defaultValue = "20") String page_size,
+            @RequestParam(name = "title", required = false, defaultValue = "") String title,
+            @RequestParam(name = "class_id", required = false, defaultValue = "") String class_id,
+            @RequestParam(name = "status", required = false, defaultValue = "") String status,
+            @RequestParam(name = "user_id", required = false, defaultValue = "") String user_id
+
+
+    ) {
+        try {
+            var response = exerciseService.findStudentEx(page, page_size, title, class_id, status, user_id);
+            var paging = exerciseService.countByCondition(page, page_size, title, status, class_id, user_id);
+            return BaseResponse.ofSucceeded(response).setMeta(paging);
+        } catch (Exception e) {
+            log.debug("error create user", e);
+            String message = e.getMessage();
+            var error = new BusinessException(new BusinessErrorCode(400,  message,message, 400));
+            return BaseResponse.ofFailed(error);
+        }
+    }
+
+    @GetMapping("/{id}")
+    public BaseResponse<?> findOne(
+            @PathVariable("id") int id
+    ) {
+        try {
+            return BaseResponse.ofSucceeded(exerciseService.findOne(id));
+        } catch (Exception e) {
+            log.debug("error create user", e);
+            String message = e.getMessage();
+
+            var error = new BusinessException(new BusinessErrorCode(400,  message,message, 400));
+            return BaseResponse.ofFailed(error);
+        }
+    }
+
+    @DeleteMapping("/{id}")
+    public BaseResponse<?> deleteById(
+            @PathVariable("id") int id
+    ) {
+        try {
+            exerciseService.deleteById(id);
+            return BaseResponse.ofSucceeded(exerciseService.findOne(id));
+        } catch (Exception e) {
+            log.debug("error create user", e);
+            String message = e.getMessage();
+
+            var error = new BusinessException(new BusinessErrorCode(400, message, message, 400));
+            log.error("error create class obj", error);
+            return BaseResponse.ofFailed(error);
+        }
+    }
+
     @PutMapping("/{id}")
     public BaseResponse<?> update(
             @PathVariable("id") int id,
@@ -56,7 +134,7 @@ public class ExerciseController {
         }
     }
 
-    @PostMapping("submit/{id}")
+    @PostMapping("/submit/{id}")
     public BaseResponse<?> submitOrCheckPoint(
             @PathVariable("id") int id,
             @RequestBody StudentExerciseRequest request
@@ -69,57 +147,6 @@ public class ExerciseController {
             if(request == null) {
                 message = "Form not null";
             }
-            var error = new BusinessException(new BusinessErrorCode(400, message, message, 400));
-            log.error("error create class obj", error);
-            return BaseResponse.ofFailed(error);
-        }
-    }
-
-    @GetMapping()
-    public BaseResponse<?> getAll(
-            @RequestParam(name = "page", required = false, defaultValue = "1") String page,
-            @RequestParam(name = "page_size", required = false, defaultValue = "20") String page_size,
-            @RequestParam(name = "title", required = false, defaultValue = "") String title
-
-    ) {
-        try {
-            var response = exerciseService.findAll(page, page_size, title);
-            var paging = exerciseService.countByCondition(page, page_size, title);
-            return BaseResponse.ofSucceeded(response).setMeta(paging);
-        } catch (Exception e) {
-            log.debug("error create user", e);
-            String message = e.getMessage();
-            var error = new BusinessException(new BusinessErrorCode(400,  message,message, 400));
-            return BaseResponse.ofFailed(error);
-        }
-    }
-
-    @GetMapping("/{id}")
-    public BaseResponse<?> findOne(
-            @PathVariable("id") int id
-    ) {
-        try {
-            return BaseResponse.ofSucceeded(exerciseService.findOne(id).getResult());
-        } catch (Exception e) {
-            log.debug("error create user", e);
-            String message = e.getMessage();
-
-            var error = new BusinessException(new BusinessErrorCode(400,  message,message, 400));
-            return BaseResponse.ofFailed(error);
-        }
-    }
-
-    @DeleteMapping("/{id}")
-    public BaseResponse<?> deleteById(
-            @PathVariable("id") int id
-    ) {
-        try {
-            exerciseService.deleteById(id);
-            return BaseResponse.ofSucceeded(exerciseService.findOne(id).getResult());
-        } catch (Exception e) {
-            log.debug("error create user", e);
-            String message = e.getMessage();
-
             var error = new BusinessException(new BusinessErrorCode(400, message, message, 400));
             log.error("error create class obj", error);
             return BaseResponse.ofFailed(error);

@@ -53,16 +53,16 @@ function ExercisesPage ()
 		dispatch( toggleShowLoading( true ) );
 		const response = await departmentApi.getExercises( filters );
 		await timeDelay( 1000 );
-		if ( response.status === 'success' || response.status === 200 )
+		if ( response?.status === 'success' || response?.status === 200 )
 		{
-			setExercises( response.data.result || [] );
-			if ( response.data.meta )
+			setExercises( response?.data|| [] );
+			if ( response?.meta )
 			{
-				setPaging( { ...response.data.meta } );
+				setPaging( { ...response?.meta } );
 			}
 		} else
 		{
-			message.error( response.message || 'Error! Please try again' )
+			message.error( response?.message || 'Error! Please try again' )
 		}
 		dispatch( toggleShowLoading( false ) );
 	};
@@ -74,7 +74,7 @@ function ExercisesPage ()
 			const response = await departmentApi.deleteExercise( id );
 			dispatch( toggleShowLoading( true ) );
 			await timeDelay( 1000 );
-			if ( response.status === 200 || response.status === 'success' )
+			if ( response?.status === 200 || response?.status === 'success' )
 			{
 				getExerciseList( { page: 1, ...params } );
 				setShowModal( false );
@@ -82,7 +82,7 @@ function ExercisesPage ()
 				message.success( 'Delete successfully!' );
 			} else
 			{
-				message.error( response.message || 'Error! Please try again' );
+				message.error( response?.message || 'Error! Please try again' );
 				dispatch( toggleShowLoading( false ) );
 
 			}
@@ -103,7 +103,9 @@ function ExercisesPage ()
 						<Card className="strpied-tabled-with-hover">
 							<Card.Header >
 								<Card.Title className={ 'd-flex justify-content-between' } as="h4">Exercise List
-									{ (role === 2 ) && <button onClick={ () => setShowModal( true ) }
+									{ 
+									// (role === 2 ) && 
+									<button onClick={ () => setShowModal( true ) }
 										type="button" className="btn btn-info" style={ { padding: '6px 14px', fontSize: 14 } }>
 										<span>Create</span>
 									</button> }
@@ -128,9 +130,11 @@ function ExercisesPage ()
 											<th className="border-0">Status</th>
 											<th className="border-0">Deadline</th>
 											<th className="border-0">Created at</th>
-											{ role === 2 ? 
-												<th className="border-0">action</th> : <th className="border-0">Teacher</th>
-											}
+											{/* { role === 2 ?  */}
+												<th className="border-0">action</th> 
+												{/* :  */}
+												<th className="border-0">Teacher</th>
+											{/* } */}
 										</tr>
 									</thead>
 
@@ -140,32 +144,33 @@ function ExercisesPage ()
 												exercises.map( ( item, index ) => (
 													<tr key={ index }>
 														<td>{ ( paging.page - 1 ) * paging.page_size + ( index + 1 ) }</td>
-														<td className="text-break" style={ { minWidth: 100 } }>{ item.title || 'N/A' }</td>
+														<td className="text-break" style={ { minWidth: 100 } }>{ item?.exercise?.title || 'N/A' }</td>
 														<td className="text-break" style={ { minWidth: 100 } }>
 															{
-																item.file && <a type="download" href={ item.file } target="_blank">{ item.file }</a> || 'N/A'
+																item?.exercise?.file && <a type="download" href={ item?.exercise?.file } target="_blank">{ item?.exercise?.file }</a> || 'N/A'
 															}
 														</td>
 														<td>
-															{ genStatusClass( item.status ) }
+															{ genStatusClass( item?.exercise?.status ) }
 														</td>
 														<td className="text-break" style={ { minWidth: 100 } }>
-															{ item.deadline && moment( item.deadline ).format( "DD/MM/yyyy" ) || 'N/A' }
+															{ item?.exercise?.deadline && moment( item?.exercise?.deadline ).format( "DD/MM/yyyy" ) || 'N/A' }
 														</td>
-														<td>{ moment( item.created_at ).format( "DD/MM/yyyy" ) }</td>
-														{ role === 2 ?
+														<td>{ moment( item?.exercise?.created_at ).format( "DD/MM/yyyy" ) }</td>
+														{/* { role === 2 ? */}
+															
 															<td className="d-flex justify-between align-items-center">
 																<button className={ 'btn btn-sm btn-info text-nowrap' }
 																	style={ { padding: '3px 8px', width: 65 } }
-																	onClick={ () => { setShowModal( true ); setId( item.id ) } }>Edit</button>
+																	onClick={ () => { setShowModal( true ); setId( item?.exercise?.id ) } }>Edit</button>
 																<button className={ 'btn btn-sm btn-danger text-nowrap ml-2' } style={ { padding: '3px 8px', width: 65 } }
-																	onClick={ () => { setIdDel( item.id ) } }>Remove</button>
+																	onClick={ () => { setIdDel( item?.exercise?.id ) } }>Remove</button>
 															</td>
-															:
+															{/* : */}
 															<td>
-																{ item.user && item.user.full_name || 'N/A' }
+																{ item?.teacher?.full_name || 'N/A' }
 															</td>
-														}
+														{/* } */}
 													</tr>
 												) )
 											) : (

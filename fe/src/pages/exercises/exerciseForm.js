@@ -49,15 +49,14 @@ export const ExercisesForm = ( props ) =>
 			let data = rs.data;
 			if ( data )
 			{
-				let classes = data.classrooms.map( item => { return item.id});
 				let formValue = {
-					title: data.title,
-					content: data.content,
-					deadline: data.deadline ? moment( data.deadline ).format( 'yyyy-MM-DD' ) : null,
-					status: data.status,
-					class_id: classes || []
+					title: data?.exercise?.title,
+					content: data?.exercise?.content,
+					deadline: data?.exercise?.deadline ? moment( data?.exercise?.deadline ).format( 'yyyy-MM-DD' ) : null,
+					status: data?.exercise?.status,
+					class_id: data?.exercise?.class_id
 				}
-				if ( data.file )
+				if ( data?.exercise?.file )
 				{
 					setFiles()
 				}
@@ -70,16 +69,17 @@ export const ExercisesForm = ( props ) =>
 	const getClassroomList = async () =>
 	{
 		const rs = await departmentApi.getClassList( { page: 1, page_size: 1000 } );
-		if ( rs?.status === 'success' && rs.data.result )
+		if ( rs?.status === 'success' && rs?.data )
 		{
-			let classData = rs.data.result.reduce( ( newItem, e ) =>
+			let classData = rs?.data?.reduce( ( newItem, e ) =>
 			{
 				newItem.push( {
-					value: e.id,
-					label: e.name
+					value: e?.classroom?.id,
+					label: e?.classroom?.name
 				} );
 				return newItem;
 			}, [] );
+			console.log(classData);
 			setClassConfig( classData );
 		}
 	}
@@ -94,17 +94,17 @@ export const ExercisesForm = ( props ) =>
 				setMes( 'You must choose a file' );
 				return;
 			}
-			let file = await uploadApi.uploadFile( [
-				{
-					originFileObj: files[ 0 ]
-				}
-			] );
-			if ( !file || file == '' )
-			{
-				setMes( 'Upload file error' );
-				return;
-			}
-			formData.file = file;
+			// let file = await uploadApi.uploadFile( [
+			// 	{
+			// 		originFileObj: files[ 0 ]
+			// 	}
+			// ] );
+			// if ( !file || file == '' )
+			// {
+			// 	setMes( 'Upload file error' );
+			// 	return;
+			// }
+			// formData.file = file;
 		}
 		let res;
 
@@ -210,7 +210,7 @@ export const ExercisesForm = ( props ) =>
 								className=' d-block'>
 								<Select
 									placeholder="Select class"
-									mode="multiple"
+									// mode="multiple"
 									showSearch
 									filterOption={ ( input, option ) =>
 										( option?.label?.toLowerCase() ).includes( input?.toLowerCase() ) }
@@ -250,7 +250,7 @@ export const ExercisesForm = ( props ) =>
 							type="button"
 							className="btn btn-secondary text-center"
 							style={ { marginRight: 10, padding: '10px 10px' } }
-							onClick={ () => reset }>
+							onClick={ () => reset() }>
 							Cancel
 						</button>
 					</div>

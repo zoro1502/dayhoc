@@ -4,22 +4,17 @@ import com.harusora.student.model.*;
 import com.harusora.student.repository.*;
 import com.harusora.student.request.ExerciseModelRequest;
 import com.harusora.student.request.StudentExerciseRequest;
-import com.harusora.student.response.CourseReponse;
 import com.harusora.student.response.ExerciseReponse;
+import com.harusora.student.response.StudentExReponse;
 import com.harusora.student.response.StudentExerciseResponse;
 import com.harusora.student.security.common.BaseResponse;
 import com.harusora.student.service.interfaceService.ExerciseService;
 import lombok.AllArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 import static java.lang.Integer.parseInt;
 
@@ -48,7 +43,7 @@ public class ExerciseServiceImpl implements ExerciseService {
             exercise.setStatus(1);
 
             var save = exerciseRepo.save(exercise);
-            ExerciseReponse response = new ExerciseReponse(Optional.of(save));
+            ExerciseReponse response = new ExerciseReponse(Optional.of(save), null);
             return response;
         } catch (Exception e) {
             throw new RuntimeException(e.getMessage());
@@ -56,15 +51,49 @@ public class ExerciseServiceImpl implements ExerciseService {
     }
 
     @Override
-    public List<ExerciseModel> findAll(String page, String page_size, String title) {
-        List<ExerciseModel> data = exerciseRepo.findAndCount((parseInt(page) - 1) * parseInt(page_size), parseInt(page_size), title);
+    public List<ExerciseReponse> findAll(String page, String page_size, String title, String class_id, String status, String user_id) {
+        List<ExerciseModel> data = exerciseRepo.findAndCount((parseInt(page) - 1) * parseInt(page_size), parseInt(page_size),title
+        );
+//                , status, class_id, user_id
 
-        return data;
+        List<ExerciseReponse> response = new ArrayList<>();
+        if(!data.isEmpty()) {
+            for(ExerciseModel item : data) {
+                ExerciseReponse itemRes = new ExerciseReponse();
+                Optional<UserModel> classRe = userRepo.findById(item.getUser_id());
+                itemRes.setExercise(Optional.of(item));
+                itemRes.setTeacher(classRe);
+                response.add(itemRes);
+            }
+        }
+        return response;
+    }
+
+    @Override
+    public List<StudentExReponse> findStudentEx(String page, String page_size, String title, String class_id, String status, String user_id) {
+        List<ExerciseModel> data = exerciseRepo.findAndCount((parseInt(page) - 1) * parseInt(page_size), parseInt(page_size), title
+//                , status, class_id, user_id
+        );
+        List<StudentExReponse> response = new ArrayList<>();
+
+        if(!data.isEmpty()) {
+            for (ExerciseModel item: data) {
+
+            }
+        }
+        return response;
     }
 
     @Override
     public ExerciseReponse findOne(int id) {
-        return new ExerciseReponse(exerciseRepo.findById(id));
+        ExerciseReponse itemRes = new ExerciseReponse();
+        Optional<ExerciseModel> ex = exerciseRepo.findById(id);
+        if(!ex.isEmpty()) {
+            Optional<UserModel> classRe = userRepo.findById(ex.get().getUser_id());
+            itemRes.setTeacher(classRe);
+        }
+        itemRes.setExercise(ex);
+        return itemRes;
     }
 
     @Override
@@ -84,7 +113,7 @@ public class ExerciseServiceImpl implements ExerciseService {
         exercise.setDeadline(exDto.getDeadline());
         exercise.setStatus(exDto.getStatus());
         var response = exerciseRepo.save(exercise);
-        return new ExerciseReponse(Optional.of(response));
+        return new ExerciseReponse(Optional.of(response), null);
     }
 
     @Override
@@ -150,8 +179,10 @@ public class ExerciseServiceImpl implements ExerciseService {
     }
 
     @Override
-    public BaseResponse.Metadata countByCondition(String page, String page_size, String title) {
-        long total = (long) exerciseRepo.count(title);
+    public BaseResponse.Metadata countByCondition(String page, String page_size, String title, String class_id, String status, String user_id) {
+        long total = (long) exerciseRepo.count(title
+//                , status,  class_id,  user_id
+        );
         BaseResponse.Metadata paging = new BaseResponse.Metadata("", parseInt(page) ,  parseInt(page_size), total, "", null);
         return paging;
     }

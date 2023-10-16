@@ -2,13 +2,16 @@ package com.harusora.student.service.impl;
 
 import com.harusora.student.model.ClassModel;
 import com.harusora.student.model.CourseModel;
+import com.harusora.student.model.UserCourseClassesModel;
 import com.harusora.student.model.UserModel;
 import com.harusora.student.repository.ClassModelRepository;
 import com.harusora.student.repository.CourseModelRepository;
+import com.harusora.student.repository.UserCourseClassesModelRepo;
+import com.harusora.student.repository.UserModelRepository;
 import com.harusora.student.request.ClassModelRequest;
+import com.harusora.student.request.UserCourseClassRequest;
 import com.harusora.student.response.ClassModelReponse;
-import com.harusora.student.response.CourseReponse;
-import com.harusora.student.response.UserModelResponse;
+import com.harusora.student.response.UserCourseClassReponse;
 import com.harusora.student.security.common.BaseResponse;
 import com.harusora.student.service.interfaceService.ClassModelService;
 import lombok.AllArgsConstructor;
@@ -28,6 +31,8 @@ public class ClassModelServiceimpl implements ClassModelService {
 
     private final ClassModelRepository classModelRepo;
     private final CourseModelRepository courseRepo;
+    private final UserModelRepository userRepo;
+    private final UserCourseClassesModelRepo userCourseRepo;
     @Override
     public ClassModel create(ClassModelRequest classDto) {
         try {
@@ -49,6 +54,38 @@ public class ClassModelServiceimpl implements ClassModelService {
 
         } catch (Exception e) {
             throw new RuntimeException(e.getMessage());
+        }
+    }
+
+    @Override
+    public UserCourseClassReponse joinClass(UserCourseClassRequest joinDto) {
+        log.info("log join---> ", joinDto);
+        int class_id = joinDto.getClass_id();
+        Optional<ClassModel> classData = classModelRepo.findById(class_id);
+        log.info("class find by id--------> ", classData);
+        if(joinDto.getUser_id() == null) {
+            throw new RuntimeException("Không tìm thấy user tương ứng");
+        }
+        if(classData.isEmpty()) {
+            throw new RuntimeException("Không tìm thấy lớp học tương ứng");
+        }
+        UserCourseClassesModel userJoin = new UserCourseClassesModel();
+        userJoin.setClass_id(joinDto.getClass_id());
+        userJoin.setUser_id(joinDto.getUser_id());
+        userJoin.setCreated_at(new Date());
+        userJoin.setCourse_id(classData.get().getCourse_id());
+        var response = userCourseRepo.save(userJoin);
+        if(response != null) {
+            Optional<UserModel> user = userRepo.findById(joinDto.getUser_id());
+            Optional<CourseModel> course = courseRepo.findById(classData.get().getCourse_id());
+            Optional<ClassModel> classroom = findOne(joinDto.getClass_id()).getResult();
+            return new UserCourseClassReponse(response.getId(),
+                    response.getClass_id(), response.getCourse_id(),
+                    response.getUser_id(), user.get(), classroom.get(), course.get(),
+                    response.getCreated_at(), response.getUpdated_at()
+                    );
+        }else {
+            throw new RuntimeException("Có lỗi xảy ra khi join class");
         }
     }
 

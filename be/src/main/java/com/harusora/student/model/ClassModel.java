@@ -25,8 +25,11 @@ public class ClassModel {
     @Id
     @GeneratedValue
     private Integer id;
+    @Column(nullable = false, unique = true)
     private String name;
+    @Column(nullable = false, unique = true)
     private String code;
+    @Column(nullable = false)
     private Integer course_id;
     private Integer status;
     private Date created_at;

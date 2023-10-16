@@ -80,6 +80,7 @@ function Admin ()
 			element.parentNode.removeChild( element );
 		}
 	}, [ location ] );
+	console.log(routes);
 	return (
 		<>
 			<div className="wrapper">

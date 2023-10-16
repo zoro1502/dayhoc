@@ -18,10 +18,10 @@ axiosClient.interceptors.response.use(
         // Any status code that lie within the range of 2xx cause this function to trigger
         // Do something with response data
 		let data = response.data;
-        if ((data && data.code === 'LG0401')) {
+        if ((data && data?.code === 'LG0401')) {
             localStorage.clear();
             window.location.href = `/login`;
-        } else if(data.code === 'LG0403') {
+        } else if(data?.code === 'LG0403') {
 			window.location.href = `/admin/error/403`;
 		}
 		await timeDelay( 1000 );
@@ -37,10 +37,10 @@ axiosClient.interceptors.response.use(
         }
 
 		let dataError = error.response?.data || null;
-		if ((dataError && dataError.code === 'LG0401')) {
+		if ((dataError && dataError?.code === 'LG0401')) {
             localStorage.clear();
             window.location.href = `/login`;
-        } else if(dataError.code === 'LG0403') {
+        } else if(dataError?.code === 'LG0403') {
 			window.location.href = `/admin/error/403`;
 		}
         // Any status codes that falls outside the range of 2xx cause this function to trigger

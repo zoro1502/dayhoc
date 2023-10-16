@@ -16,8 +16,9 @@ import { FilterUser } from "./filter";
 import { timeDelay } from "api/common";
 import { useDispatch } from "react-redux";
 import { toggleShowLoading } from "redux/actions/common-action";
-import { useParams } from "react-router-dom/cjs/react-router-dom.min";
+import { useLocation, useParams } from "react-router-dom/cjs/react-router-dom.min";
 import { UserForm } from "./UserForm";
+import { useSearchParams } from "react-router-dom";
 
 function UserPage ()
 {
@@ -46,9 +47,14 @@ function UserPage ()
 		getUserList( { ...paging } );
 	}, [ roles ] );
 
+	const {localtion} = useLocation();
+
+	// const [searchParams, setSearchParams] = useSearchParams({})
+
 	const getUserList = async ( filters ) =>
 	{
 		dispatch( toggleShowLoading( true ) );
+		// setSearchParams(filters)
 		if ( roles.role === 'teacher' )
 		{
 			filters = { ...filters, role: 2 };
@@ -58,13 +64,13 @@ function UserPage ()
 		}
 		const response = await userApi.getUsers( filters );
 
-		if ( response.status === 200 || response.status === 'success' )
+		if ( response?.status === 200 || response?.status === 'success' )
 		{
-			setUsers( response.data.result );
-			setPaging( { ...response.data.meta } );
+			setUsers( response?.data);
+			setPaging( { ...response?.meta } );
 		} else
 		{
-			message.error( response.message || 'Error! Please try again' );
+			message.error( response?.message || 'Error! Please try again' );
 
 		}
 		dispatch( toggleShowLoading( false ) );

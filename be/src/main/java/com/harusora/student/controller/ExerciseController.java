@@ -3,6 +3,7 @@ package com.harusora.student.controller;
 import com.harusora.student.exception.BusinessErrorCode;
 import com.harusora.student.exception.BusinessException;
 import com.harusora.student.request.ExerciseModelRequest;
+import com.harusora.student.request.StudentExerciseRequest;
 import com.harusora.student.request.UserModelRequest;
 import com.harusora.student.security.common.BaseResponse;
 import com.harusora.student.service.interfaceService.ExerciseService;
@@ -51,6 +52,25 @@ public class ExerciseController {
                 message = "Form not null";
             }
             var error = new BusinessException(new BusinessErrorCode(400,  message,message, 400));
+            return BaseResponse.ofFailed(error);
+        }
+    }
+
+    @PostMapping("submit/{id}")
+    public BaseResponse<?> submitOrCheckPoint(
+            @PathVariable("id") int id,
+            @RequestBody StudentExerciseRequest request
+    ) {
+        try {
+            return BaseResponse.ofSucceeded(exerciseService.submit(id, request));
+        } catch (Exception e) {
+            log.debug("error create class", e);
+            String message = e.getMessage();
+            if(request == null) {
+                message = "Form not null";
+            }
+            var error = new BusinessException(new BusinessErrorCode(400, message, message, 400));
+            log.error("error create class obj", error);
             return BaseResponse.ofFailed(error);
         }
     }

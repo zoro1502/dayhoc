@@ -81,9 +81,9 @@ export const UserForm = ( props ) =>
 	{
 		const response = await CourseService.getCourses(
 			{ page: 1, page_size: 1000, status: 1 } );
-		if ( response.status === 'success' && response.data.result.length > 0 )
+		if ( response.status === 'success' && response.data.length > 0 )
 		{
-			let course = response.data.result.reduce( ( arr, e ) =>
+			let course = response.data.reduce( ( arr, e ) =>
 			{
 				arr.push( {
 					value: e.id,

@@ -24,6 +24,7 @@ public class ExerciseModel {
     private String content;
     private String file;
     private Integer user_id;
+    @Column(nullable = false)
     private Integer class_id;
     private Integer status;
     private Integer type;

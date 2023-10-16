@@ -31,9 +31,11 @@ function Sidebar ( { color, image, routes, role } )
 					<a className="simple-text" href="/admin">QLLH</a>
 				</div>
 				<Nav>
-					{ role && routes.map( ( prop, key ) =>
+				{/* role &&  */}
+					{ routes.map( ( prop, key ) =>
 					{
-						if ( !prop.redirect && !prop.not_show && prop.role.includes( Number( role ) ) )
+						// && prop.role.includes( Number( role ))
+						if ( !prop.redirect && !prop.not_show   )
 							return (
 								<li
 									className={

@@ -3,6 +3,7 @@ package com.harusora.student.controller;
 import com.harusora.student.exception.BusinessErrorCode;
 import com.harusora.student.exception.BusinessException;
 import com.harusora.student.request.ClassModelRequest;
+import com.harusora.student.request.UserCourseClassRequest;
 import com.harusora.student.request.UserModelRequest;
 import com.harusora.student.security.common.BaseResponse;
 import com.harusora.student.service.interfaceService.ClassModelService;
@@ -26,6 +27,25 @@ public class ClassStudentController {
     ) {
         try {
             return BaseResponse.ofSucceeded(classModelService.create(request));
+        } catch (Exception e) {
+            log.debug("error create class", e);
+            String message = e.getMessage();
+            if(request == null) {
+                message = "Form not null";
+            }
+            var error = new BusinessException(new BusinessErrorCode(400, message, message, 400));
+            log.error("error create class obj", error);
+            return BaseResponse.ofFailed(error);
+        }
+    }
+
+    @PostMapping("/join/{id}")
+    public BaseResponse<?> studentJoinClass(
+            @PathVariable("id") int id,
+            @RequestBody UserCourseClassRequest request
+    ) {
+        try {
+            return BaseResponse.ofSucceeded(classModelService.joinClass(request));
         } catch (Exception e) {
             log.debug("error create class", e);
             String message = e.getMessage();

@@ -16,8 +16,11 @@ public interface UserModelRepository extends JpaRepository<UserModel, Integer> {
             "WHERE TRUE AND (:email is null or :email ='' or u.email like %:email%) " +
             "AND (:phone is null or :phone ='' or u.phone like %:phone%) " +
             "AND (:role is null or :role ='' or u.role = :role) " +
+            "AND (:status is null or :status ='' or u.status = :status) " +
             " LIMIT :page_size OFFSET :page",nativeQuery = true)
-    List<UserModel> findAndCount(@Param("page") int page, @Param("page_size")int page_size, @Param("email") String email, @Param("role") String role, @Param("phone") String phone);
+    List<UserModel> findAndCount(@Param("page") int page, @Param("page_size")int page_size,
+                                 @Param("email") String email, @Param("role") String role,
+                                 @Param("phone") String phone, @Param("status") String status);
 
     @Override
     Optional<UserModel> findById(Integer integer);
@@ -27,5 +30,13 @@ public interface UserModelRepository extends JpaRepository<UserModel, Integer> {
             "AND (:phone is null or :phone ='' or u.phone like %:phone%) " +
             "AND (:role is null or :role ='' or u.role = :role) ",nativeQuery = true)
     Integer count(@Param("email") String email, @Param("role") String role, @Param("phone")String phone);
+
+    @Query(value = "Select * from user u " +
+            "WHERE TRUE AND u.email like %:email%",nativeQuery = true)
+    UserModel findByEmail(@Param("email") String email);
+
+    @Query(value = "Select * from user u " +
+            "WHERE TRUE AND u.phone like %:phone%",nativeQuery = true)
+    UserModel findByPhone(@Param("phone") String phone);
 
 }

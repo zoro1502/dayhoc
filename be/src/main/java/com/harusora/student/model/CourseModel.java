@@ -27,8 +27,10 @@ public class CourseModel {
     @GeneratedValue
     private Integer id;
     private String name;
+    @Column(nullable = false, unique = true)
     private String code;
     private String content;
+    @Column(nullable = false)
     private Integer user_id;
     private Integer status;
     private Date created_at;

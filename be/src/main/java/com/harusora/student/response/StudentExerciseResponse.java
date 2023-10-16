@@ -16,7 +16,7 @@ import java.util.Date;
 @AllArgsConstructor
 @NoArgsConstructor
 @Accessors(chain = true)
-public class StudentExercise {
+public class StudentExerciseResponse {
 
     private Integer id;
 

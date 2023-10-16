@@ -51,6 +51,7 @@ public class BaseResponse<T> {
         response.meta.code = Metadata.OK_CODE;
         response.meta.page = data.getNumber();
         response.meta.size = data.getSize();
+        response.meta.page_size = data.getSize();
         response.meta.total = data.getTotalElements();
         return response;
     }
@@ -94,6 +95,7 @@ public class BaseResponse<T> {
         String code;
         Integer page;
         Integer size;
+        Integer page_size;
         Long total;
         String message;
         List<FieldViolation> errors;
@@ -106,6 +108,7 @@ public class BaseResponse<T> {
             this.code = code;
             this.page = page;
             this.size = size;
+            this.page_size = size;
             this.total = total;
             this.message = message;
             this.errors = errors;
@@ -121,6 +124,9 @@ public class BaseResponse<T> {
 
         public Integer getSize() {
             return size;
+        }
+        public Integer getPage_size() {
+            return page_size;
         }
 
         public Long getTotal() {

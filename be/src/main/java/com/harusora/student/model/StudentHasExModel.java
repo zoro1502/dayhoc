@@ -29,6 +29,7 @@ public class StudentHasExModel {
     private Integer class_id;
 
 
+    private String file;
     private Double mark;
 
 

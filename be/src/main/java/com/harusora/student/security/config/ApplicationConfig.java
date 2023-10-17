@@ -1,5 +1,6 @@
 package com.harusora.student.security.config;
 
+import com.harusora.student.repository.UserModelRepository;
 import com.harusora.student.security.auditing.ApplicationAuditAware;
 import com.harusora.student.user.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -19,7 +20,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 @RequiredArgsConstructor
 public class ApplicationConfig {
 
-  private final UserRepository repository;
+  private final UserModelRepository repository;
 
   @Bean
   public UserDetailsService userDetailsService() {

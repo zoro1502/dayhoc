@@ -3,11 +3,15 @@ import axiosClient from "../axiosClient";
 const profileApi = {
 
 	async getProfile() {
-		return await axiosClient.get(`auth/profile`);
+		let id = localStorage.getItem("user_id");
+		if(id) {
+			return await axiosClient.get(`auth/profile/` + id);
+		}
 	},
 
 	async updateProfile(data) {
-		return await axiosClient.put(`auth/profile`, data);
+		let id = localStorage.getItem("user_id");
+		return await axiosClient.put(`auth/profile/` + id, data);
 	},
 }
 

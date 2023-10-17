@@ -18,10 +18,7 @@ import { buildImage } from "api/common";
 export const UserForm = ( props ) =>
 {
 
-
-
 	const [ form ] = useForm();
-
 
 	const dispatch = useDispatch();
 

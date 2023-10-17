@@ -138,7 +138,7 @@ public class UserServiceImpl implements UserModelService {
 
     private void findUserByEmail(UserModelRequest userDto, int id) {
         if(userDto.getEmail() != null || userDto.getEmail() != "") {
-            UserModel user = userRepo.findByEmail(userDto.getEmail());
+            UserModel user = userRepo.findByEmailUser(userDto.getEmail());
 
             if(user != null) {
                 log.error("User email----------> " + user.getId() + user.getEmail());

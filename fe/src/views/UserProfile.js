@@ -49,18 +49,18 @@ function User ({dispatch, showLoading})
 			dispatch(toggleShowLoading(true));
 			const response = await profileApi.getProfile();
 			await timeDelay(1000)
-			if ( response.status === 'success' )
+			if ( response?.status === 'success' )
 			{
-				setNameShow( response.data.full_name );
-				setEmailShow( response.data.email );
-				setPhoneShow( response.data.phone );
-				setAddressShow( response.data.address );
-				setFullName( response.data.full_name );
-				setEmail( response.data.email );
-				setPhone( response.data.phone );
-				setAddress( response.data.address );
+				setNameShow( response?.data?.user?.full_name );
+				setEmailShow( response?.data?.user?.email );
+				setPhoneShow( response?.data?.user?.phone );
+				setAddressShow( response?.data?.user?.address );
+				setFullName( response?.data?.user?.full_name );
+				setEmail( response?.data?.user?.email );
+				setPhone( response?.data?.user?.phone );
+				setAddress( response?.data?.user?.address );
 			} else {
-				message.error( response.message || 'Error! Please try again' );
+				message.error( response?.message || 'Error! Please try again' );
 			}
 			setLoading( false );
 			dispatch(toggleShowLoading(false));
@@ -87,13 +87,13 @@ function User ({dispatch, showLoading})
 				dispatch(toggleShowLoading(true));
 				const response = await profileApi.updateProfile( form );
 				await timeDelay(1000);
-				if ( response.status === 'success' )
+				if ( response?.status === 'success' )
 				{
 					await getProfile();
 					message.success('Update profile successfully!');
 					setLoadingButton( false );
 				} else {
-					message.error(response.message);
+					message.error(response?.message);
 					setLoadingButton( false );
 				}
 			}

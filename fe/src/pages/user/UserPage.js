@@ -19,6 +19,8 @@ import { toggleShowLoading } from "redux/actions/common-action";
 import { useLocation, useParams } from "react-router-dom/cjs/react-router-dom.min";
 import { UserForm } from "./UserForm";
 import { useSearchParams } from "react-router-dom";
+import { buildImage } from "api/common";
+import { DEFAULT_IMG } from "api/common";
 
 function UserPage ()
 {
@@ -136,6 +138,10 @@ function UserPage ()
 		}
 		return 'N/A'
 	}
+	const errorImg = ( e ) =>
+	{
+		e.currentTarget.src = defaultImg;
+	}
 
 	return (
 		<>
@@ -151,9 +157,9 @@ function UserPage ()
 										type="button" className="btn btn-info" style={ { padding: '6px 14px', fontSize: 14 } }>
 										<span>Create</span></button>
 									}
-									<button onClick={ () => setShowModal( true ) }
+									{/* <button onClick={ () => setShowModal( true ) }
 											type="button" className="btn btn-info" style={ { padding: '6px 14px', fontSize: 14 } }>
-											<span>Create</span></button>
+											<span>Create</span></button> */}
 								</Card.Title>
 								<div className="my-4">
 									<FilterUser
@@ -169,15 +175,16 @@ function UserPage ()
 									<thead>
 										<tr>
 											<th className="border-0 text-nowrap">ID</th>
-											{/* <th className="border-0 text-nowrap">Avatar</th> */ }
+											<th className="border-0 text-nowrap">Avatar</th>  
 											<th className="border-0 text-nowrap">Full name</th>
 											<th className="border-0 text-nowrap">Email</th>
 											<th className="border-0 text-nowrap">Phone number</th>
 
 											<th className="border-0 text-nowrap">Status</th>
 											<th className="border-0">Address</th>
-											{ localStorage.getItem( 'role' ) === '1' &&  <></>}
+											{ localStorage.getItem( 'role' ) === '1' &&  
 											<th className="border-0 text-nowrap">action</th>
+											}
 
 										</tr>
 									</thead>
@@ -186,6 +193,7 @@ function UserPage ()
 											users.map( ( item, index ) => (
 												<tr key={ index }>
 													<td>{ ( paging.page - 1 ) * paging.page_size + ( index + 1 ) }</td>
+													<td><img width={80} height={80} src={item.avatar && buildImage(item.avatar) || DEFAULT_IMG} onError={errorImg}/></td>
 													<td className="text-break" style={ { minWidth: 150 } }>{ item.full_name || 'N/A' }</td>
 													<td className="text-nowrap">{ item.email || 'N/A' }</td>
 													<td className="text-nowrap">{ item.phone || 'N/A' }</td>
@@ -196,12 +204,12 @@ function UserPage ()
 													</td>
 													{
 														localStorage.getItem( 'role' ) === '1' && 
-														<></>
-													}
-													<td className="d-flex justify-between align-items-center">
+														<td className="d-flex justify-between align-items-center">
 															<button className={ 'btn btn-sm btn-info text-nowrap' } style={ { padding: '3px 8px', width: 65 } } onClick={ () => { setId( item.id ); setShowModal( true ) } }>Edit</button>
 															{/* <button className={ 'btn btn-sm btn-danger ml-2 text-nowrap' } style={ { padding: '3px 8px', width: 65 } } onClick={ () => { setShowModal( true ); setId( item.id ) } }></button> */ }
 														</td>
+													}
+													
 												</tr>
 											) )
 										) : (

@@ -198,15 +198,11 @@ function ClassroomsPage ()
 											<th className="border-0">Course name</th>
 											{/* <th className="border-0">Time table</th> */ }
 											<th className="border-0">Status</th>
-											{/* <th className="border-0">Students</th> */}
-
-											{ role === 3 &&
-												<>
-
-												</>
-											}
+											{/* <th className="border-0">Students</th> */ }
 											<th className="border-0">Created at</th>
 											<th className="border-0">action</th>
+											
+
 										</tr>
 									</thead>
 									{/* {loading === true &&
@@ -241,23 +237,23 @@ function ClassroomsPage ()
 
 														<td >
 															<div className="d-flex justify-between align-items-center align-middle">
-																<button className={ 'btn btn-sm btn-info text-nowrap' }
-																	style={ { padding: '3px 8px', width: 65 } }
-																	onClick={ () => { setShowModal( true ); setId( item?.classroom?.id ) } }>Edit</button>
-																<button className={ 'btn btn-sm btn-danger text-nowrap ml-2' } style={ { padding: '3px 8px', width: 65 } }
-																	onClick={ () => { setIdDel( item?.classroom?.id ) } }>Remove</button>
-																<button className={ 'btn btn-sm btn-warning text-nowrap' }
-																	style={ { padding: '3px 8px', width: 65 } }
-																	onClick={ () => joinData( item?.classroom?.id ) }>Join</button>
-																{/* { role !== 3 &&
-																	<>
 
+
+																{ role !== 3 &&
+																	<>
+																		<button className={ 'btn btn-sm btn-info text-nowrap' }
+																			style={ { padding: '3px 8px', width: 65 } }
+																			onClick={ () => { setShowModal( true ); setId( item?.classroom?.id ) } }>Edit</button>
+																		<button className={ 'btn btn-sm btn-danger text-nowrap ml-2' } style={ { padding: '3px 8px', width: 65 } }
+																			onClick={ () => { setIdDel( item?.classroom?.id ) } }>Remove</button>
 																	</>
 																	||
-																	!item.is_joined && 
-																	
+																	!item.is_joined &&
 
-																} */}
+																	<button className={ 'btn btn-sm btn-warning text-nowrap' }
+																		style={ { padding: '3px 8px', width: 65 } }
+																		onClick={ () => joinData( item?.classroom?.id ) }>Join</button>
+																}
 
 															</div>
 

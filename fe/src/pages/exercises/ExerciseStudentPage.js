@@ -117,7 +117,7 @@ function ExercisesStudentPage ()
 														<td className="text-break" style={ { minWidth: 100 } }>
 															{ item.title || 'N/A' }
 														</td>
-														<td className="text-break" style={ { minWidth: 100 } }>
+														<td className="text-nowrap" style={ { minWidth: 100 } }>
 															{
 																item.question && <a type="download" href={ item.question && buildImage(item.question) } target="_blank">{ item.question }</a> || 'N/A'
 															}
@@ -127,11 +127,11 @@ function ExercisesStudentPage ()
 																item.answer && <a type="download" href={ item.answer && buildImage(item.answer) } target="_blank">{ item.answer }</a> || 'N/A'
 															}
 														</td>
-														<td className="text-break" style={ { minWidth: 80 } }>
+														<td className="text-nowrap" style={ { minWidth: 80 } }>
 															{ item.class_name || 'N/A' }
 														</td>
 
-														<td className="tex">
+														<td className="text-nowrap">
 															{ item.mark }
 														</td>
 
@@ -139,7 +139,7 @@ function ExercisesStudentPage ()
 															{ genStatusClass( item.status ) }
 														</td>
 
-														<td className="text-break" style={ { minWidth: 100 } }>
+														<td className="text-nowrap" style={ { minWidth: 100 } }>
 															{ item.deadline && moment( item.deadline ).format( "DD/MM/yyyy" ) || 'N/A' }
 														</td>
 														{ role !== 2 &&

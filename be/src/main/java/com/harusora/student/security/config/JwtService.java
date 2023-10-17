@@ -1,5 +1,8 @@
 package com.harusora.student.security.config;
 
+import com.harusora.student.exception.BusinessErrorCode;
+import com.harusora.student.exception.BusinessException;
+import com.harusora.student.security.common.BaseResponse;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
@@ -26,6 +29,7 @@ public class JwtService {
   private long refreshExpiration;
 
   public String extractUsername(String token) {
+
     return extractClaim(token, Claims::getSubject);
   }
 
@@ -81,11 +85,11 @@ public class JwtService {
 
   private Claims extractAllClaims(String token) {
     return Jwts
-        .parserBuilder()
-        .setSigningKey(getSignInKey())
-        .build()
-        .parseClaimsJws(token)
-        .getBody();
+            .parserBuilder()
+            .setSigningKey(getSignInKey())
+            .build()
+            .parseClaimsJws(token)
+            .getBody();
   }
 
   private Key getSignInKey() {

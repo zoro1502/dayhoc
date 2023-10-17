@@ -33,10 +33,11 @@ public interface UserModelRepository extends JpaRepository<UserModel, Integer> {
 
     @Query(value = "Select * from user u " +
             "WHERE TRUE AND u.email like %:email%",nativeQuery = true)
-    UserModel findByEmail(@Param("email") String email);
+    UserModel findByEmailUser(@Param("email") String email);
 
     @Query(value = "Select * from user u " +
             "WHERE TRUE AND u.phone like %:phone%",nativeQuery = true)
     UserModel findByPhone(@Param("phone") String phone);
 
+    Optional<UserModel> findByEmail(String username);
 }

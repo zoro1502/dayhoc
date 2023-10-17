@@ -131,11 +131,11 @@ function ExercisesPage ()
 											<th className="border-0">Status</th>
 											<th className="border-0">Deadline</th>
 											<th className="border-0">Created at</th>
-											{/* { role === 2 ?  */}
+											{ role === 2 ? 
 												<th className="border-0">action</th> 
-												{/* :  */}
+												 :  
 												<th className="border-0">Teacher</th>
-											{/* } */}
+											 } 
 										</tr>
 									</thead>
 
@@ -158,7 +158,7 @@ function ExercisesPage ()
 															{ item?.exercise?.deadline && moment( item?.exercise?.deadline ).format( "DD/MM/yyyy" ) || 'N/A' }
 														</td>
 														<td>{ moment( item?.exercise?.created_at ).format( "DD/MM/yyyy" ) }</td>
-														{/* { role === 2 ? */}
+														 { role === 2 ? 
 															
 															<td className="d-flex justify-between align-items-center">
 																<button className={ 'btn btn-sm btn-info text-nowrap' }
@@ -167,11 +167,11 @@ function ExercisesPage ()
 																<button className={ 'btn btn-sm btn-danger text-nowrap ml-2' } style={ { padding: '3px 8px', width: 65 } }
 																	onClick={ () => { setIdDel( item?.exercise?.id ) } }>Remove</button>
 															</td>
-															{/* : */}
+															 : 
 															<td>
 																{ item?.teacher?.full_name || 'N/A' }
 															</td>
-														{/* } */}
+														 } 
 													</tr>
 												) )
 											) : (

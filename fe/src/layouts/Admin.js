@@ -39,11 +39,11 @@ function Admin ()
 
 	const [ accessToken, setAccessToken ] = useState( localStorage.getItem( 'accessToken' ) || null );
 
-	// if ( !accessToken )
-	// {
-	// 	localStorage.clear();
-	// 	window.location.href = '/login';
-	// }
+	if ( !accessToken )
+	{
+		localStorage.clear();
+		window.location.href = '/login';
+	}
 
 	const getRoutes = ( routes ) =>
 	{

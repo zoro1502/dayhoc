@@ -26,7 +26,6 @@ public class authenController {
 
     @PostMapping("/register")
     public BaseResponse<?> registerAdmin(
-            @PathVariable("id") int id,
             @RequestBody UserModelRequest request
     ) {
         try {

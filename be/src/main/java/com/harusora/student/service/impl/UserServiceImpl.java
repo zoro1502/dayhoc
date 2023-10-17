@@ -49,7 +49,7 @@ public class UserServiceImpl implements UserModelService {
             user.setGender(userDto.getGender());
             var save = userRepo.save(user);
             List<CourseModel> courseModel = null;
-            if(save != null && !userDto.getCourseIds().isEmpty()) {
+            if(save != null && userDto.getCourseIds() != null && !userDto.getCourseIds().isEmpty()) {
                     String id = "";
                     for(int item :userDto.getCourseIds()) {
                         Optional<CourseModel> course = courseRepo.findById(item);

@@ -105,7 +105,7 @@ function ExercisesPage ()
 							<Card.Header >
 								<Card.Title className={ 'd-flex justify-content-between' } as="h4">Exercise List
 									{ 
-									// (role === 2 ) && 
+									(role === 2 ) && 
 									<button onClick={ () => setShowModal( true ) }
 										type="button" className="btn btn-info" style={ { padding: '6px 14px', fontSize: 14 } }>
 										<span>Create</span>

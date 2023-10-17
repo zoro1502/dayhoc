@@ -11,12 +11,12 @@ import java.util.List;
 
 public interface CourseService {
     CourseReponse create(CourseModelRequest courseDto);
-    List<CourseReponse> findAll(String page, String page_size, String code, String course_id);
+    List<CourseReponse> findAll(String page, String page_size, String code, String course_id, String user_id);
     CourseReponse findOne(int id);
 
     CourseReponse update(int id, CourseModelRequest courseDto);
 
     void deleteById(int id);
 
-    BaseResponse.Metadata countByCondition(String page, String page_size, String code, String course_id);
+    BaseResponse.Metadata countByCondition(String page, String page_size, String code, String course_id, String user_id);
 }

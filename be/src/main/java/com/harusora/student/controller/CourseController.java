@@ -61,12 +61,13 @@ public class CourseController {
             @RequestParam(name = "page", required = false, defaultValue = "1") String page,
             @RequestParam(name = "page_size", required = false, defaultValue = "20") String page_size,
             @RequestParam(name = "code", required = false, defaultValue = "") String code,
-            @RequestParam(name = "course_id", required = false, defaultValue = "") String course_id
+            @RequestParam(name = "course_id", required = false, defaultValue = "") String course_id,
+            @RequestParam(name = "user_id", required = false, defaultValue = "") String user_id
 
     ) {
         try {
-            var response = courseService.findAll(page, page_size, code, course_id);
-            var paging = courseService.countByCondition(page, page_size, code, course_id);
+            var response = courseService.findAll(page, page_size, code, course_id, user_id);
+            var paging = courseService.countByCondition(page, page_size, code, course_id, user_id);
             return BaseResponse.ofSucceeded(response).setMeta(paging);
         } catch (Exception e) {
             log.debug("error create user", e);

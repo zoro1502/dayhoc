@@ -6,6 +6,9 @@ const departmentApi = {
 	async getDepartments ( params )
 	{
 		let filters = buildFilter( params );
+		if(localStorage.getItem("role") === "2") {
+			filters.user_id = localStorage.getItem("user_id");
+		}
 		return await axiosClient.get( `courses`, { params: filters } );
 	},
 
@@ -32,6 +35,12 @@ const departmentApi = {
 	async getClassList ( params )
 	{
 		let filters = buildFilter( params );
+		if(localStorage.getItem("role") === "2") {
+			filters.user_id = localStorage.getItem("user_id");
+		}
+		if(localStorage.getItem("role") === "3") {
+			filters.student_id = localStorage.getItem("user_id");
+		}
 		return await axiosClient.get( `classrooms`, { params: filters } );
 	},
 
@@ -57,7 +66,17 @@ const departmentApi = {
 
 	async joinClass ( id )
 	{
-		return await axiosClient.post( `classrooms/join/${ id }`, {} );
+		let data = {};
+		console.log(localStorage.getItem("role") == "3");
+		if(localStorage.getItem("role") === "3") {
+			data.user_id = localStorage.getItem("user_id");
+		} else {
+			return {
+				status: "error",
+				message: "Permission denied!"
+			}
+		}
+		return await axiosClient.post( `classrooms/join/${ id }`, data );
 	},
 
 
@@ -66,12 +85,24 @@ const departmentApi = {
 	async getExercises ( params )
 	{
 		let filters = buildFilter( params );
+		if(localStorage.getItem("role") === "2") {
+			filters.user_id = localStorage.getItem("user_id")
+		}
+		if(localStorage.getItem("role") === "3") {
+			filters.student_id = localStorage.getItem("student_id")
+		}
 		return await axiosClient.get( `exercises`, { params: filters } );
 	},
 
 	async getExercisesStudent ( params )
 	{
 		let filters = buildFilter( params );
+		if(localStorage.getItem("role") === "2") {
+			filters.teacher_id = localStorage.getItem("user_id")
+		}
+		if(localStorage.getItem("role") === "3") {
+			filters.user_id = localStorage.getItem("user_id")
+		}
 		return await axiosClient.get( `exercises/student`, { params: filters } );
 	},
 

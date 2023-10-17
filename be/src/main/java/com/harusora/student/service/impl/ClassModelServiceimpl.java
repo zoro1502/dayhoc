@@ -14,6 +14,7 @@ import com.harusora.student.response.ClassModelReponse;
 import com.harusora.student.response.UserCourseClassReponse;
 import com.harusora.student.security.common.BaseResponse;
 import com.harusora.student.service.interfaceService.ClassModelService;
+import com.harusora.student.user.User;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -59,19 +60,36 @@ public class ClassModelServiceimpl implements ClassModelService {
     }
 
     @Override
-    public UserCourseClassReponse joinClass(UserCourseClassRequest joinDto) {
+    public UserCourseClassReponse joinClass(int id, UserCourseClassRequest joinDto) {
         log.info("log join---> ", joinDto);
-        int class_id = joinDto.getClass_id();
+        int class_id = id;
         Optional<ClassModel> classData = classModelRepo.findById(class_id);
         log.info("class find by id--------> ", classData);
         if(joinDto.getUser_id() == null) {
-            throw new RuntimeException("Không tìm thấy user tương ứng");
+            throw new RuntimeException("Not found user");
+        }
+        Optional<UserModel> userOld = userRepo.findById(joinDto.getUser_id());
+        if(userOld.isEmpty()) {
+            throw new RuntimeException("Not found user");
+        }
+//        if(userOld.get().getRole() != 3) {
+//            throw new RuntimeException("Just student to join classroom");
+//        }
+        if(userOld.get().getStatus() != 1) {
+            throw new RuntimeException("User not active");
         }
         if(classData.isEmpty()) {
-            throw new RuntimeException("Không tìm thấy lớp học tương ứng");
+            throw new RuntimeException("Not found classroom");
+        }
+        if(classData.get().getStatus() != 1) {
+            throw new RuntimeException("Classroom not active");
+        }
+        UserCourseClassesModel userJoinOld = userCourseRepo.findByStudentIdAndClassId(joinDto.getUser_id(), class_id);
+        if(userJoinOld != null) {
+            throw new RuntimeException("You have joined this classroom");
         }
         UserCourseClassesModel userJoin = new UserCourseClassesModel();
-        userJoin.setClass_id(joinDto.getClass_id());
+        userJoin.setClass_id(id);
         userJoin.setUser_id(joinDto.getUser_id());
         userJoin.setCreated_at(new Date());
         userJoin.setCourse_id(classData.get().getCourse_id());
@@ -79,21 +97,24 @@ public class ClassModelServiceimpl implements ClassModelService {
         if(response != null) {
             Optional<UserModel> user = userRepo.findById(joinDto.getUser_id());
             Optional<CourseModel> course = courseRepo.findById(classData.get().getCourse_id());
-            Optional<ClassModel> classroom = findOne(joinDto.getClass_id()).getClassroom();
+            Optional<ClassModel> classroom = findOne(id).getClassroom();
             return new UserCourseClassReponse(response.getId(),
                     response.getClass_id(), response.getCourse_id(),
                     response.getUser_id(), user.get(), classroom.get(), course.get(),
                     response.getCreated_at(), response.getUpdated_at()
                     );
         }else {
-            throw new RuntimeException("Có lỗi xảy ra khi join class");
+            throw new RuntimeException("Error to join class");
         }
     }
 
     @Override
-    public List<ClassModelReponse> findAll(String page, String page_size, String code, String course_id) {
+    public List<ClassModelReponse> findAll(String page, String page_size, String code, String course_id, String user_id, String student_id) {
         List<ClassModelReponse> response = new ArrayList<ClassModelReponse>();
-        List<ClassModel> classModel = classModelRepo.findAndCount((parseInt(page) - 1) * parseInt(page_size), parseInt(page_size), code, course_id);
+        List<ClassModel> classModel = classModelRepo.findAndCount((parseInt(page) - 1) * parseInt(page_size), parseInt(page_size),
+                code, course_id
+                , user_id
+        );
         if(!classModel.isEmpty()) {
             for(ClassModel room : classModel) {
                 Optional<CourseModel> course = courseRepo.findById(room.getCourse_id());
@@ -104,6 +125,16 @@ public class ClassModelServiceimpl implements ClassModelService {
                     Optional<UserModel> user = userRepo.findById(course.get().getUser_id());
                     itemRes.setTeacher(user);
                 }
+                if(student_id != null && !student_id.equals("")) {
+                    UserCourseClassesModel studentClass = userCourseRepo.findByStudentIdAndClassId(parseInt(student_id), room.getId());
+                    if(studentClass != null) {
+                        Optional<UserModel> student = userRepo.findById(parseInt(student_id));
+                        if(!student.isEmpty()) {
+                            itemRes.setStudent(student);
+                        }
+                    }
+                }
+
                 response.add(itemRes);
             }
         }
@@ -122,6 +153,7 @@ public class ClassModelServiceimpl implements ClassModelService {
                 Optional<UserModel> user = userRepo.findById(course.get().getUser_id());
                 response.setTeacher(user);
             }
+
         }
         return response;
     }
@@ -159,8 +191,8 @@ public class ClassModelServiceimpl implements ClassModelService {
     }
 
     @Override
-    public BaseResponse.Metadata countByCondition(String page, String page_size, String code, String course_id) {
-        long total = (long) classModelRepo.count(code, course_id);
+    public BaseResponse.Metadata countByCondition(String page, String page_size, String code, String course_id, String user_id) {
+        long total = (long) classModelRepo.count(code, course_id, user_id);
         BaseResponse.Metadata paging = new BaseResponse.Metadata("", parseInt(page) ,  parseInt(page_size), total, "", null);
         return paging;
     }

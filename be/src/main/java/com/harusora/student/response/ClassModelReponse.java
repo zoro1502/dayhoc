@@ -24,7 +24,7 @@ public class ClassModelReponse {
 
     private Optional<UserModel> teacher;
 
-    private UserModel student;
+    private Optional<UserModel> student;
 
     private Optional<CourseModel> course;
 }

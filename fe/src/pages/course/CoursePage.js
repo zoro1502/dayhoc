@@ -49,7 +49,7 @@ function CoursePage ()
 		await timeDelay( 1000 );
 		if ( response?.status === 'success' || response?.status === 200 )
 		{
-		
+
 			setCourses( response?.data );
 			setPaging( { ...response?.meta } );
 		} else
@@ -95,12 +95,13 @@ function CoursePage ()
 						<Card className="strpied-tabled-with-hover">
 							<Card.Header >
 								<Card.Title className={ 'd-flex justify-content-between' } as="h4">Course List
-									{/* { ( role === 1 || role === 2 ) && 
-									 } */}
-									 <button onClick={ () => setShowModal( true ) }
-										type="button" className="btn btn-info" style={ { padding: '6px 14px', fontSize: 14 } }>
-										<span>Create</span>
-									</button>
+									{ ( role === 1 ) &&
+										<button onClick={ () => setShowModal( true ) }
+											type="button" className="btn btn-info" style={ { padding: '6px 14px', fontSize: 14 } }>
+											<span>Create</span>
+										</button>
+									}
+
 								</Card.Title>
 
 								<div className="my-4">
@@ -121,12 +122,7 @@ function CoursePage ()
 											<th className="border-0">Course code</th>
 											<th className="border-0">Teacher</th>
 											<th className="border-0">Created at</th>
-											{ role !== 3 &&
-												<>
-
-													<th className="border-0">action</th>
-												</>
-											}
+											{ role === 1 &&<th className="border-0">action</th>}
 										</tr>
 									</thead>
 									{/* {loading === true &&
@@ -150,21 +146,21 @@ function CoursePage ()
 														<td className="text-break" style={ { minWidth: 100 } }>{ item?.course?.name || 'N/A' }</td>
 														<td className="text-break" style={ { minWidth: 100 } }>{ item?.course?.code || 'N/A' }</td>
 														<td className="text-break" style={ { minWidth: 100 } }>{ item?.teacher?.full_name || 'N/A' }</td>
+														<td>{ moment( item.created_at ).format( "DD/MM/yyyy" ) }</td>
 
 														{ role === 1 &&
 															<>
-
+																<td className="d-flex justify-between align-items-center">
+																	<button className={ 'btn btn-sm btn-info text-nowrap' }
+																		style={ { padding: '3px 8px', width: 65 } }
+																		onClick={ () => { setShowModal( true ); setId( item.id ) } }>Edit</button>
+																	<button className={ 'btn btn-sm btn-danger text-nowrap ml-2' } style={ { padding: '3px 8px', width: 65 } }
+																		onClick={ () => { setIdDel( item.id ) } }>Remove</button>
+																</td>
 															</>
 
 														}
-														<td>{ moment( item.created_at ).format( "DD/MM/yyyy" ) }</td>
-														<td className="d-flex justify-between align-items-center">
-															<button className={ 'btn btn-sm btn-info text-nowrap' }
-																style={ { padding: '3px 8px', width: 65 } }
-																onClick={ () => { setShowModal( true ); setId( item.id ) } }>Edit</button>
-															<button className={ 'btn btn-sm btn-danger text-nowrap ml-2' } style={ { padding: '3px 8px', width: 65 } }
-																onClick={ () => { setIdDel( item.id ) } }>Remove</button>
-														</td>
+
 													</tr>
 												) )
 											) : (

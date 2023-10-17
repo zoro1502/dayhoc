@@ -14,12 +14,12 @@ import java.util.List;
 public interface ClassModelService {
     ClassModel create(ClassModelRequest classDto);
 
-    UserCourseClassReponse joinClass(UserCourseClassRequest classDto);
-    List<ClassModelReponse> findAll(String page, String page_size, String code, String course_id);
+    UserCourseClassReponse joinClass(int id, UserCourseClassRequest classDto);
+    List<ClassModelReponse> findAll(String page, String page_size, String code, String course_id, String user_id, String student_id);
     ClassModelReponse findOne(int id);
 
     ClassModel update(int id, ClassModelRequest classDto);
     void deleteById(int id);
 
-    BaseResponse.Metadata countByCondition(String page, String page_size, String code, String course_id);
+    BaseResponse.Metadata countByCondition(String page, String page_size, String code, String course_id, String user_id);
 }

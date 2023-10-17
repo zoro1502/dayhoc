@@ -70,8 +70,14 @@ export const CourseForm = ( props ) =>
 
 	const getCourses = async () =>
 	{
+		let filters = {
+			page: 1, page_size: 1000, status: 1
+		}
+		if(localStorage.getItem("role") === "2") {
+			filters.user_id = localStorage.getItem("user_id");
+		}
 		const response = await departmentApi.getDepartments(
-			{ page: 1, page_size: 1000, status: 1 } );
+			filters);
 		if ( response.status === 'success' && response.data.length > 0 )
 		{
 			let user = response.data.reduce( ( arr, e ) =>

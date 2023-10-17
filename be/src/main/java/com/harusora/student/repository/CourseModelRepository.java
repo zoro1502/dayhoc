@@ -18,9 +18,13 @@ public interface CourseModelRepository extends JpaRepository<CourseModel, Intege
 
     @Query(value = "Select * from courses u " +
             "WHERE TRUE AND (:code is null or :code ='' or u.code like %:code%) " +
-            "AND (:course_id is null or :course_id ='' or u.id = :course_id) " +
+            " AND (:course_id is null or :course_id ='' or u.id = :course_id) " +
+            " AND (:user_id is null or :user_id ='' or u.user_id = :user_id) " +
             " LIMIT :page_size OFFSET :page",nativeQuery = true)
-    List<CourseModel> findAndCount(@Param("page") int page, @Param("page_size")int page_size, @Param("code") String code, @Param("course_id") String course_id);
+    List<CourseModel> findAndCount(@Param("page") int page, @Param("page_size")int page_size,
+                                   @Param("code") String code, @Param("course_id") String course_id,
+                                   @Param("user_id") String user_id
+                                   );
 
 
     @Query(value = "Select c.* from courses c LEFT JOIN user_courses_classes uc ON c.id = uc.course_id " +
@@ -43,8 +47,9 @@ public interface CourseModelRepository extends JpaRepository<CourseModel, Intege
 
     @Query(value = "Select count(*) from courses u " +
             "WHERE TRUE AND (:code is null or :code ='' or u.code like %:code%) " +
+            " AND (:user_id is null or :user_id ='' or u.user_id = :user_id) " +
             " AND (:course_id is null or :course_id ='' or u.id = :course_id)",nativeQuery = true)
-    Integer count(  @Param("code") String code, @Param("course_id") String course_id);
+    Integer count(  @Param("code") String code, @Param("course_id") String course_id,  @Param("user_id") String user_id);
 
 
 }

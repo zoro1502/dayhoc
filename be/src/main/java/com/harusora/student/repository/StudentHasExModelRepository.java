@@ -29,30 +29,40 @@ public interface StudentHasExModelRepository extends JpaRepository<StudentHasExM
             " from student_has_exercises sh " +
             " LEFT JOIN user u on sh.student_id = u.id " +
             " LEFT JOIN classes c on sh.class_id = c.id " +
-            " LEFT JOIN courses co on c.course_id = c.id " +
+            " LEFT JOIN courses co on c.course_id = co.id " +
             " LEFT JOIN user t on co.user_id = t.id " +
             " LEFT JOIN exercises e on sh.exercise_id = e.id " +
             " WHERE TRUE AND (:title is null or :title ='' or e.title like %:title%) " +
+            " AND (:status is null or :status ='' or e.status = :status) " +
+            " AND (:class_id is null or :class_id ='' or e.class_id = :class_id) " +
+            " AND (:user_id is null or :user_id ='' or u.id = :user_id) " +
+            " AND (:teacher_id is null or :teacher_id ='' or t.id = :teacher_id) " +
             " LIMIT :page_size OFFSET :page"
 
             ,nativeQuery = true)
     List<IStudentExResponse> findAndCount(@Param("page") int page, @Param("page_size")int page_size,
-                                               @Param("title") String title
+                                          @Param("title") String title,
+                                          @Param("status") String status,
+                                          @Param("class_id") String class_id,
+                                          @Param("user_id") String user_id,
+                                          @Param("teacher_id") String teacher_id
     );
 
     @Query(value = "SELECT count(*) " +
             "   from student_has_exercises sh " +
             "   LEFT JOIN user u on sh.student_id = u.id " +
             "   LEFT JOIN classes c on sh.class_id = c.id " +
-            "   LEFT JOIN courses co on c.course_id = c.id " +
+            "   LEFT JOIN courses co on c.course_id = co.id " +
             "   LEFT JOIN user t on co.user_id = t.id " +
-            "   LEFT JOIN exercises e on sh.exercise_id = e.id "
+            "   LEFT JOIN exercises e on sh.exercise_id = e.id " +
+            " WHERE TRUE AND (:title is null or :title ='' or e.title like %:title%) " +
+            " AND (:status is null or :status ='' or e.status = :status) " +
+            " AND (:class_id is null or :class_id ='' or e.class_id = :class_id) " +
+            " AND (:user_id is null or :user_id ='' or u.id = :user_id) " +
+            " AND (:teacher_id is null or :teacher_id ='' or t.id = :teacher_id) "
             ,nativeQuery = true)
-    int count(
-                         @Param("title") String title
-//            ,
-//                                     @Param("status") String status
-//            ,
-//                                     @Param("class_id") String class_id,@Param("user_id") String user_id
-    );
+    int count(@Param("title") String title,@Param("status") String status,
+              @Param("class_id") String class_id,
+              @Param("user_id") String user_id,
+              @Param("teacher_id") String teacher_id);
 }

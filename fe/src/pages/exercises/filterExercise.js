@@ -33,13 +33,13 @@ export const FilterExercise = ( props ) =>
 	const getClassroomList = async () =>
 	{
 		const rs = await departmentApi.getClassList( { page: 1, page_size: 1000 } );
-		if ( rs?.status === 'success' && rs.data.result )
+		if ( rs?.status === 'success' && rs.data )
 		{
-			let classData = rs.data.result.reduce( ( newItem, e ) =>
+			let classData = rs.data.reduce( ( newItem, e ) =>
 			{
 				newItem.push( {
-					value: e.id,
-					label: e.name
+					value: e?.classroom?.id,
+					label: e?.classroom?.name
 				} );
 				return newItem;
 			}, [] );

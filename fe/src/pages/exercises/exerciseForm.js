@@ -68,7 +68,13 @@ export const ExercisesForm = ( props ) =>
 	}
 	const getClassroomList = async () =>
 	{
-		const rs = await departmentApi.getClassList( { page: 1, page_size: 1000 } );
+		let filters = {
+			page: 1, page_size: 1000, status: 1
+		}
+		if(localStorage.getItem("role") === "2") {
+			filters.user_id = localStorage.getItem("user_id");
+		}
+		const rs = await departmentApi.getClassList(filters );
 		if ( rs?.status === 'success' && rs?.data )
 		{
 			let classData = rs?.data?.reduce( ( newItem, e ) =>
@@ -87,6 +93,12 @@ export const ExercisesForm = ( props ) =>
 	const submitForm = async ( e ) =>
 	{
 		let formData = { ...e };
+		if(localStorage.getItem("role") == "2" && localStorage.getItem("user_id")) {
+			formData.user_id = localStorage.getItem("user_id");
+		} else {
+			setMes( 'Not found teacher' );
+			return;
+		}
 		if ( isChange )
 		{
 			if ( !files || files?.length == 0 )

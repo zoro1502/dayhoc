@@ -154,7 +154,7 @@ function ExercisesStudentPage ()
 														}
 														<td>{ moment( item.created_at ).format( "DD/MM/yyyy" ) }</td>
 														{ role !== 1 &&
-															<td className="d-flex justify-between align-items-center">
+															<td className="justify-between align-items-center">
 																<button className={ 'btn btn-sm btn-info text-nowrap' }
 																	style={ { padding: '3px 8px', width: 65 } }
 																	onClick={ () =>

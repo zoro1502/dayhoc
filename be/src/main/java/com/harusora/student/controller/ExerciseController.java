@@ -68,14 +68,15 @@ public class ExerciseController {
             @RequestParam(name = "title", required = false, defaultValue = "") String title,
             @RequestParam(name = "class_id", required = false, defaultValue = "") String class_id,
             @RequestParam(name = "status", required = false, defaultValue = "") String status,
-            @RequestParam(name = "user_id", required = false, defaultValue = "") String user_id
+            @RequestParam(name = "user_id", required = false, defaultValue = "") String user_id,
+            @RequestParam(name = "teacher_id", required = false, defaultValue = "") String teacher_id
 
 
     ) {
         try {
-            var paging = exerciseService.countStudentEx(page, page_size, title, status, class_id, user_id);
+            var paging = exerciseService.countStudentEx(page, page_size, title, status, class_id, user_id,teacher_id );
             System.out.println("Paging" + String.valueOf(paging));
-            var response = exerciseService.findStudentEx(page, page_size, title, class_id, status, user_id);
+            var response = exerciseService.findStudentEx(page, page_size, title, class_id, status, user_id,teacher_id);
             return BaseResponse.ofSucceeded(response).setMeta(paging);
         } catch (Exception e) {
             log.debug("error create user", e);

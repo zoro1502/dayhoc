@@ -16,17 +16,24 @@ public interface ClassModelRepository extends JpaRepository<ClassModel, Integer>
     @Override
     Optional<ClassModel> findById(Integer integer);
 
-    @Query(value = "Select * from classes u " +
+    @Query(value = "Select u.* from classes u LEFT JOIN courses c ON u.course_id = c.id " +
             "WHERE TRUE AND (:code is null or :code ='' or u.code like %:code%) " +
-            "AND (:course_id is null or :course_id ='' or u.course_id like %:course_id%) " +
+            "AND (:course_id is null or :course_id ='' or u.course_id= :course_id) " +
+            "AND (:user_id is null or :user_id = '' or c.user_id= :user_id) " +
             " LIMIT :page_size OFFSET :page",nativeQuery = true)
-    List<ClassModel> findAndCount(@Param("page") int page, @Param("page_size")int page_size, @Param("code") String code, @Param("course_id") String course_id);
+    List<ClassModel> findAndCount(@Param("page") int page,
+                                  @Param("page_size")int page_size,
+                                  @Param("code") String code,
+                                  @Param("course_id") String course_id
+                                  ,@Param("user_id") String user_id
+    );
 
 
-    @Query(value = "Select count(*) from classes u " +
+    @Query(value = "Select count(*) from classes u LEFT JOIN courses c ON u.course_id = c.id " +
             "WHERE TRUE AND (:code is null or :code ='' or u.code like %:code%) " +
+            "AND (:user_id is null or :user_id ='' or c.user_id= :user_id) " +
             "AND (:course_id is null or :course_id ='' or u.course_id = :course_id) ",nativeQuery = true)
-    Integer count(  @Param("code") String code, @Param("course_id") String course_id);
+    Integer count(  @Param("code") String code, @Param("course_id") String course_id,@Param("user_id") String user_id);
 
 
     @Query(value = "Delete from classes u " +
@@ -40,7 +47,7 @@ public interface ClassModelRepository extends JpaRepository<ClassModel, Integer>
 
     @Query(value = "Select c.* from classes c LEFT JOIN user_courses_classes uc ON c.id = uc.class_id " +
             " WHERE TRUE AND (:class_id is null or :class_id ='' or c.id = :class_id) " +
-            " AND uc.user_id=:user_id",nativeQuery = true)
+            " AND uc.user_id= :user_id",nativeQuery = true)
     List<ClassModel> findClassUser(@Param("user_id") String user_id, @Param("class_id") String class_id);
 //    void deleteClassModelByCourse_id( @Param("course_id") int course_id);
 }

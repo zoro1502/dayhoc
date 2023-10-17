@@ -248,7 +248,7 @@ function ClassroomsPage ()
 																			onClick={ () => { setIdDel( item?.classroom?.id ) } }>Remove</button>
 																	</>
 																	||
-																	!item.is_joined &&
+																	!item.student &&
 
 																	<button className={ 'btn btn-sm btn-warning text-nowrap' }
 																		style={ { padding: '3px 8px', width: 65 } }

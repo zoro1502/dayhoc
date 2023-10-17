@@ -33,6 +33,7 @@ public class ExerciseServiceImpl implements ExerciseService {
             exercise.setCreated_at(new Date());
             exercise.setContent(exDto.getContent());
             exercise.setFile(exDto.getFile());
+            exercise.setTitle(exDto.getTitle());
 
             exercise.setDeadline(exDto.getDeadline());
             exercise.setContent(exDto.getContent());
@@ -50,9 +51,9 @@ public class ExerciseServiceImpl implements ExerciseService {
 
     @Override
     public List<ExerciseReponse> findAll(String page, String page_size, String title, String class_id, String status, String user_id) {
-        List<ExerciseModel> data = exerciseRepo.findAndCount((parseInt(page) - 1) * parseInt(page_size), parseInt(page_size),title
-        );
-//                , status, class_id, user_id
+        List<ExerciseModel> data = exerciseRepo.findAndCount((parseInt(page) - 1) * parseInt(page_size),
+                parseInt(page_size),title, status, class_id, user_id );
+//
 
         List<ExerciseReponse> response = new ArrayList<>();
         if(!data.isEmpty()) {
@@ -68,9 +69,12 @@ public class ExerciseServiceImpl implements ExerciseService {
     }
 
     @Override
-    public List<StudentExResponse> findStudentEx(String page, String page_size, String title, String class_id, String status, String user_id) {
+    public List<StudentExResponse> findStudentEx(String page, String page_size, String title,
+                                                 String class_id, String status, String user_id,
+                                                 String teacher_id) {
+        log.info("params====> " + user_id + " -----" + teacher_id);
         List<IStudentExResponse> data = studentExRepo.findAndCount((parseInt(page) - 1) * parseInt(page_size), parseInt(page_size), title
-//                , status, class_id, user_id
+                , status, class_id, user_id, teacher_id
         );
         List<StudentExResponse> response = new ArrayList<>();
 
@@ -222,16 +226,17 @@ public class ExerciseServiceImpl implements ExerciseService {
     @Override
     public BaseResponse.Metadata countByCondition(String page, String page_size, String title, String class_id, String status, String user_id) {
         long total = (long) exerciseRepo.count(title
-//                , status,  class_id,  user_id
+                , status,  class_id,  user_id
         );
         BaseResponse.Metadata paging = new BaseResponse.Metadata("", parseInt(page) ,  parseInt(page_size), total, "", null);
         return paging;
     }
 
     @Override
-    public BaseResponse.Metadata countStudentEx(String page, String page_size, String title, String status, String class_id, String user_id) {
+    public BaseResponse.Metadata countStudentEx(String page, String page_size, String title, String status,
+                                                String class_id, String user_id, String teacher_id) {
         long total = (long) studentExRepo.count(title
-//                , status,  class_id,  user_id
+                , status,  class_id,  user_id, teacher_id
         );
         BaseResponse.Metadata paging = new BaseResponse.Metadata("", parseInt(page) ,  parseInt(page_size), total, "", null);
         return paging;

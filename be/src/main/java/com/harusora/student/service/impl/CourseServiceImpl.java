@@ -59,8 +59,9 @@ public class CourseServiceImpl implements CourseService {
     }
 
     @Override
-    public List<CourseReponse> findAll(String page, String page_size, String code, String course_id) {
-        List<CourseModel> data = courseRepo.findAndCount((parseInt(page) - 1) * parseInt(page_size), parseInt(page_size), code, course_id);
+    public List<CourseReponse> findAll(String page, String page_size, String code, String course_id,String user_id) {
+        List<CourseModel> data = courseRepo.findAndCount((parseInt(page) - 1) * parseInt(page_size), parseInt(page_size),
+                code, course_id, user_id);
         List<CourseReponse> response = new ArrayList<CourseReponse>();
         if(!data.isEmpty()) {
             for (CourseModel item: data) {
@@ -120,8 +121,8 @@ public class CourseServiceImpl implements CourseService {
     }
 
     @Override
-    public BaseResponse.Metadata countByCondition(String page, String page_size, String code, String course_id) {
-        long total = (long) courseRepo.count(code, course_id);
+    public BaseResponse.Metadata countByCondition(String page, String page_size, String code, String course_id, String user_id) {
+        long total = (long) courseRepo.count(code, course_id, user_id);
         BaseResponse.Metadata paging = new BaseResponse.Metadata("", parseInt(page) ,  parseInt(page_size), total, "", null);
         return paging;
     }

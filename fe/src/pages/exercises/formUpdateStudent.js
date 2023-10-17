@@ -67,7 +67,9 @@ export const FormUpdateStudent = ( props ) =>
 			formData.file = file;
 		}
 		let res;
-
+		if(props.role == 3) {
+			formData.user_id = localStorage.getItem("user_id")
+		}
 		res = await departmentApi.updateExerciseStudent( props.exercise?.exercise_id, formData );
 		if ( res?.status === 'success' )
 		{
